@@ -36,7 +36,8 @@ function createBEM(prefixName: string) {
 		blockSuffix && element && modifier
 			? _bem(prefixName, blockSuffix, element, modifier)
 			: '';
-	const is = (name: string, state: any) => (state ? `is-${name}` : '');
+	const is = (name: string, state: string | boolean) =>
+		state ? `is-${name}` : '';
 	return {
 		b,
 		e,
@@ -50,6 +51,6 @@ function createBEM(prefixName: string) {
 }
 
 export function createNameSpace(name: string) {
-	const prefixName = `z-${name}`;
+	const prefixName = `dew-${name}`;
 	return createBEM(prefixName);
 }
