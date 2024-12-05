@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { AddCircle } from '@vicons/ionicons5'
 </script>
 
 <template>
-  <dew-icon :color="'#000'" :size="16">hello</dew-icon>
+  <dew-icon :color="'yellow'" :size="40"><AddCircle></AddCircle></dew-icon>
 </template>
 
 <style scoped></style>

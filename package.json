@@ -19,6 +19,12 @@
 		"vue": "^3.5.13"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.16.0",
+		"eslint": "^9.16.0",
+		"eslint-plugin-vue": "^9.32.0",
+		"globals": "^15.13.0",
+		"sass": "^1.82.0",
+		"typescript-eslint": "^8.17.0",
 		"unplugin-vue-define-options": "^1.5.2"
 	}
 }

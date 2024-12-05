@@ -3,6 +3,7 @@ import './style.css';
 import App from './App.vue';
 
 import Icon from '@dew-ui/components/icon';
+import '@dew-ui/theme-chalk/src/index.scss';
 
 const plugins = [Icon];
 
