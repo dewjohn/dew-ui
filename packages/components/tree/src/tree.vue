@@ -4,6 +4,7 @@
       v-for="node in flattenTree"
       :node="node"
       :expanded="isExpanded(node)"
+      :loadingKeys="loadingKeysRef"
       @toggle="toggle"
       :key="node.key"
     ></dew-tree-node>
@@ -12,7 +13,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { TreeNode, TreeOption, treeProps } from './tree'
+import { Key, TreeNode, TreeOption, treeProps } from './tree'
 import { watch } from 'vue'
 import { createNameSpace } from '@dew-ui/utils/create'
 import DewTreeNode from './treeNode.vue'
@@ -49,7 +50,7 @@ const treeOptions = createOption(
   props.labelFiled,
   props.childrenField
 )
-function createTree(data: TreeOption[]) {
+function createTree(data: TreeOption[], parent: TreeNode | null = null) {
   function traversal(data: TreeOption[], parent: TreeNode | null = null) {
     return data.map(node => {
       let children = treeOptions.getChildren(node) || []
@@ -68,7 +69,7 @@ function createTree(data: TreeOption[]) {
       return treeNode
     })
   }
-  const result: TreeNode[] = traversal(data)
+  const result: TreeNode[] = traversal(data, parent)
   return result
 }
 
@@ -111,6 +112,28 @@ const flattenTree = computed(() => {
   return flattenNodes
 })
 
+const loadingKeysRef = ref(new Set<Key>([]))
+
+function triggerLoading(node: TreeNode) {
+  // 这个节点需要异步加载
+  if (!node.children.length && !node.isLeaf) {
+    // 如果没有加载过这个节点，就加载这个节点
+    const loadingKeys = loadingKeysRef.value
+    if (!loadingKeys.has(node.key)) {
+      loadingKeys.add(node.key)
+      const { onLoad } = props
+      if (onLoad) {
+        onLoad!(node.rawNode).then(children => {
+          node.rawNode.children = children
+          // 更新自定义的node
+          node.children = createTree(children, node)
+          loadingKeys.delete(node.key)
+        })
+      }
+    }
+  }
+}
+
 function isExpanded(node: TreeNode): boolean {
   return expandedKeySet.value.has(node.key)
 }
@@ -120,10 +143,12 @@ function collpase(node: TreeNode) {
 }
 function expand(node: TreeNode) {
   expandedKeySet.value.add(node.key)
+  triggerLoading(node)
 }
 function toggle(node: TreeNode) {
   const expandedKeys = expandedKeySet.value
-  if (expandedKeys.has(node.key)) {
+  // 如果当前这个节点 正在加载中 不能收起
+  if (expandedKeys.has(node.key) && !loadingKeysRef.value.has(node.key)) {
     collpase(node)
   } else {
     expand(node)

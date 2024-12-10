@@ -12,3 +12,5 @@ declare module 'vue' {
     DewTree: typeof Tree
   }
 }
+
+export * from './src/tree'
