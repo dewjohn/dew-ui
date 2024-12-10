@@ -12,7 +12,6 @@ export default defineComponent({
       >
         <path
           d="M256 102.4v819.2l512-409.6L256 102.4z"
-          fill="#333333"
           p-id="11451"
         ></path>
       </svg>

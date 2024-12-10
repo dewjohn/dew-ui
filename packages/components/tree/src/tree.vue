@@ -4,6 +4,7 @@
       v-for="node in flattenTree"
       :node="node"
       :expanded="isExpanded(node)"
+      @toggle="toggle"
       :key="node.key"
     ></dew-tree-node>
   </div>
@@ -112,5 +113,20 @@ const flattenTree = computed(() => {
 
 function isExpanded(node: TreeNode): boolean {
   return expandedKeySet.value.has(node.key)
+}
+
+function collpase(node: TreeNode) {
+  expandedKeySet.value.delete(node.key)
+}
+function expand(node: TreeNode) {
+  expandedKeySet.value.add(node.key)
+}
+function toggle(node: TreeNode) {
+  const expandedKeys = expandedKeySet.value
+  if (expandedKeys.has(node.key)) {
+    collpase(node)
+  } else {
+    expand(node)
+  }
 }
 </script>

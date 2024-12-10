@@ -5,9 +5,14 @@
       :style="{ paddingLeft: `${node.level * 16}px` }"
     >
       <span
-        :class="[bem.e('expand-icon'), { expanded: expanded && !node.isLeaf }]"
+        :class="[
+          bem.e('expand-icon'),
+          { expanded: expanded && !node.isLeaf },
+          bem.is('leaf', node.isLeaf)
+        ]"
+        @click="onClickExpand"
       >
-        <dew-icon size="16" color="pink"><Switcher /></dew-icon>
+        <dew-icon size="12"><Switcher /></dew-icon>
       </span>
       <span> {{ node?.label }} </span>
     </div>
@@ -18,9 +23,14 @@
 import Switcher from './icon/Switcher'
 import DewIcon from '@dew-ui/components/icon'
 import { createNameSpace } from '@dew-ui/utils/create'
-import { treeNodeProps } from './tree'
-defineProps(treeNodeProps)
+import { treeNodeEmits, treeNodeProps } from './tree'
+const props = defineProps(treeNodeProps)
+const emit = defineEmits(treeNodeEmits)
 const bem = createNameSpace('tree-node')
+
+function onClickExpand() {
+  emit('toggle', props.node)
+}
 </script>
 
 <style scoped></style>
