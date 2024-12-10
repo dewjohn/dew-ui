@@ -1,13 +1,26 @@
-<template>sadas</template>
+<template>
+  <div :class="bem.b()">
+    <dew-tree-node
+      v-for="node in flattenTree"
+      :node="node"
+      :expanded="isExpanded(node)"
+      :key="node.key"
+    ></dew-tree-node>
+  </div>
+</template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { TreeNode, TreeOption, treeProps } from './tree'
 import { watch } from 'vue'
+import { createNameSpace } from '@dew-ui/utils/create'
+import DewTreeNode from './treeNode.vue'
 
 defineOptions({
   name: 'dew-tree'
 })
+
+const bem = createNameSpace('tree')
 
 const props = defineProps(treeProps)
 // 有了props要对用户的数据进行格式化，格式化一个固定的结果
@@ -48,7 +61,7 @@ function createTree(data: TreeOption[]) {
         isLeaf: node.isLeaf ?? children.length === 0
       }
       if (children.length > 0) {
-        treeNode.children = traversal(children)
+        treeNode.children = traversal(children, treeNode)
       }
 
       return treeNode
@@ -67,4 +80,37 @@ watch(
   },
   { immediate: true }
 )
+
+// 需要展开的key有哪些
+const expandedKeySet = ref(new Set(props.defaultExpandedKeys))
+
+const flattenTree = computed(() => {
+  let expandedKeys = expandedKeySet.value // 要展开的keys有哪些
+  let flattenNodes: TreeNode[] = [] // 拍平之后的结果
+  const nodes = tree.value || [] // 被格式化的节点
+  const stack: TreeNode[] = [] // 用于被遍历的栈
+  for (let i = nodes.length - 1; i >= 0; i--) {
+    // 倒序放入
+    stack.push(nodes[i])
+  }
+  // 深度遍历
+  while (stack.length) {
+    const node = stack.pop()
+    if (!node) continue
+    flattenNodes.push(node)
+    if (expandedKeys.has(node.key)) {
+      const children = node.children
+      if (children) {
+        for (let i = node.children.length - 1; i >= 0; i--) {
+          stack.push(node.children[i])
+        }
+      }
+    }
+  }
+  return flattenNodes
+})
+
+function isExpanded(node: TreeNode): boolean {
+  return expandedKeySet.value.has(node.key)
+}
 </script>

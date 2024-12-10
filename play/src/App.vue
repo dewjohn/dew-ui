@@ -37,6 +37,7 @@ console.log(data.value)
     label-filed="name"
     key-filed="key"
     children-field="children"
+    :default-expanded-keys="['40', '41']"
   ></dew-tree>
 </template>
 

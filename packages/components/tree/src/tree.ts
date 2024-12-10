@@ -22,6 +22,10 @@ export const treeProps = {
     type: Array as PropType<TreeOption[]>,
     default: () => []
   },
+  defaultExpandedKeys: {
+    type: Array as PropType<Array<Key>>,
+    default: () => []
+  },
   labelFiled: {
     type: String,
     default: 'label'
@@ -36,4 +40,16 @@ export const treeProps = {
   }
 } as const
 
+export const treeNodeProps = {
+  node: {
+    type: Object as PropType<TreeNode>,
+    required: true
+  },
+  expanded: {
+    type: Boolean,
+    required: true
+  }
+} as const
+
+export type TreeNodeProps = Partial<ExtractPropTypes<typeof treeNodeProps>>
 export type TreeProps = Partial<ExtractPropTypes<typeof treeProps>>
