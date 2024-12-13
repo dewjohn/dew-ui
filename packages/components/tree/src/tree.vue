@@ -3,17 +3,19 @@
     <dew-tree-node
       v-for="node in flattenTree"
       :node="node"
+      :key="node.key"
       :expanded="isExpanded(node)"
       :loadingKeys="loadingKeysRef"
+      :selectedKeys="selectKeysRef"
+      @select="handleSelect"
       @toggle="toggle"
-      :key="node.key"
     ></dew-tree-node>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Key, TreeNode, TreeOption, treeProps } from './tree'
+import { Key, treeEmitts, TreeNode, TreeOption, treeProps } from './tree'
 import { watch } from 'vue'
 import { createNameSpace } from '@dew-ui/utils/create'
 import DewTreeNode from './treeNode.vue'
@@ -153,5 +155,47 @@ function toggle(node: TreeNode) {
   } else {
     expand(node)
   }
+}
+
+// 实现选中节点
+const emit = defineEmits(treeEmitts)
+
+const selectKeysRef = ref<Key[]>([])
+
+watch(
+  () => props.selectedKeys,
+  value => {
+    if (value) {
+      selectKeysRef.value = value
+      console.log('selectedKeys', value)
+    }
+  },
+  {
+    immediate: true
+  }
+)
+// 处理选中的节点
+function handleSelect(node: TreeNode) {
+  let keys = Array.from(selectKeysRef.value)
+
+  if (!props.selectable) return // 如果不能选择什么都不用做了
+
+  if (props.multiple) {
+    // 多选
+    const index = keys.findIndex(key => key === node.key)
+    if (index > -1) {
+      keys.splice(index, 1) // 取消选中
+    } else {
+      keys.push(node.key)
+    }
+  } else {
+    // 单选
+    if (keys.includes(node.key)) {
+      keys = [] // 取消单选
+    } else {
+      keys = [node.key] // 选中
+    }
+  }
+  emit('update:selectedKeys', keys)
 }
 </script>
