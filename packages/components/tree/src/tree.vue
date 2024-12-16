@@ -62,6 +62,7 @@ function createTree(data: TreeOption[], parent: TreeNode | null = null) {
         children: [],
         rawNode: node,
         level: parent ? parent.level + 1 : 0,
+        disabled: !!node.disabled,
         isLeaf: node.isLeaf ?? children.length === 0
       }
       if (children.length > 0) {

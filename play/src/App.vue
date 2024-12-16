@@ -52,7 +52,34 @@ function createLabel(level: number): string {
   return ''
 }
 
-const data = ref(createData())
+// const data = ref(createData())
+const data = ref<TreeOption[]>([
+  {
+    key: '0',
+    label: '0',
+    children: [
+      {
+        key: '0-0',
+        label: '0-0'
+      },
+      {
+        disabled: true, // 这个节点被禁用了
+        key: '0-1',
+        label: '0-1',
+        children: [
+          {
+            label: '0-1-0',
+            key: '0-1-0'
+          },
+          {
+            label: '0-1-1',
+            key: '0-1-1'
+          }
+        ]
+      }
+    ]
+  }
+])
 const handleLoad = (node: TreeOption) => {
   return new Promise<TreeOption[]>((resolve, reject) => {
     setTimeout(() => {
@@ -76,7 +103,7 @@ const value = ref<Key[]>(['40', '41'])
   <!-- 树组件，传递一个树形组件 -->
   <dew-tree
     :data="data"
-    label-filed="name"
+    label-filed="label"
     key-filed="key"
     children-field="children"
     :on-load="handleLoad"

@@ -9,6 +9,24 @@
   padding: 5px 0;
   font-size: 16px;
 
+  @include e('label') {
+  }
+  &:not(.is-disabled) {
+    .dew-tree-node__label {
+      cursor: pointer;
+      display: flex;
+      flex: 1;
+    }
+  }
+
+  &.is-disabled {
+    .dew-tree-node__label {
+      cursor: not-allowed;
+      display: flex;
+      flex: 1;
+    }
+  }
+
   &.hover {
     background: rgb(199, 199, 235);
   }
@@ -32,10 +50,5 @@
   }
   @include e('content') {
     display: flex;
-  }
-  @include e('label') {
-    cursor: pointer;
-    display: flex;
-    flex: 1;
   }
 }
