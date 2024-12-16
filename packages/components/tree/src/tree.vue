@@ -14,8 +14,15 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { Key, treeEmitts, TreeNode, TreeOption, treeProps } from './tree'
+import { computed, provide, ref, useSlots } from 'vue'
+import {
+  Key,
+  treeEmitts,
+  treeInjectKey,
+  TreeNode,
+  TreeOption,
+  treeProps
+} from './tree'
 import { watch } from 'vue'
 import { createNameSpace } from '@dew-ui/utils/create'
 import DewTreeNode from './treeNode.vue'
@@ -199,4 +206,8 @@ function handleSelect(node: TreeNode) {
   }
   emit('update:selectedKeys', keys)
 }
+
+provide(treeInjectKey, {
+  slot: useSlots()
+})
 </script>

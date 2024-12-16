@@ -24,7 +24,7 @@
         </dew-icon>
       </span>
       <span @click="handleSelected" :class="bem.e('label')">
-        {{ node?.label }}
+        <DewTreeNodeContext :node="node"></DewTreeNodeContext>
       </span>
     </div>
   </div>
@@ -34,6 +34,7 @@
 import SwitcherIcon from './icon/Switcher'
 import LoadingIcon from './icon/Loading'
 import DewIcon from '@dew-ui/components/icon'
+import DewTreeNodeContext from './tree-node-context'
 import { createNameSpace } from '@dew-ui/utils/create'
 import { treeNodeEmits, treeNodeProps } from './tree'
 import { computed } from 'vue'
