@@ -1,15 +1,18 @@
 <template>
   <div :class="bem.b()">
-    <dew-tree-node
-      v-for="node in flattenTree"
-      :node="node"
-      :key="node.key"
-      :expanded="isExpanded(node)"
-      :loadingKeys="loadingKeysRef"
-      :selectedKeys="selectKeysRef"
-      @select="handleSelect"
-      @toggle="toggle"
-    ></dew-tree-node>
+    <dew-virtual-list :items="flattenTree" :remain="8" :size="31">
+      <template #default="{ node }">
+        <dew-tree-node
+          :node="node"
+          :key="node.key"
+          :expanded="isExpanded(node)"
+          :loadingKeys="loadingKeysRef"
+          :selectedKeys="selectKeysRef"
+          @select="handleSelect"
+          @toggle="toggle"
+        ></dew-tree-node>
+      </template>
+    </dew-virtual-list>
   </div>
 </template>
 
@@ -26,6 +29,7 @@ import {
 import { watch } from 'vue'
 import { createNameSpace } from '@dew-ui/utils/create'
 import DewTreeNode from './treeNode.vue'
+import DewVirtualList from '@dew-ui/components/virtual-list'
 
 defineOptions({
   name: 'dew-tree'
