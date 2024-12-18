@@ -28,6 +28,7 @@
         :model-value="checked"
         :disabled="disabled"
         :indeterminate="indeterminate"
+        @change="handleChange"
       ></dew-checkbox>
       <span @click="handleSelected" :class="bem.e('label')">
         <DewTreeNodeContext :node="node"></DewTreeNodeContext>
@@ -64,6 +65,9 @@ const isSelected = computed(() => {
 function handleSelected() {
   if (props.node.disabled) return
   emit('select', props.node)
+}
+function handleChange(val: boolean) {
+  emit('check', props.node, val)
 }
 </script>
 

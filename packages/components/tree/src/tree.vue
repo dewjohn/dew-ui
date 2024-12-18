@@ -14,6 +14,7 @@
           :checked="isChecked(node)"
           :disabled="isDisabled(node)"
           :indeterminate="isIndeterminate(node)"
+          @check="toggleCheck"
         ></dew-tree-node>
       </template>
     </dew-virtual-list>
@@ -21,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref, useSlots } from 'vue'
+import { computed, onMounted, provide, ref, useSlots } from 'vue'
 import {
   Key,
   treeEmitts,
@@ -78,7 +79,8 @@ function createTree(data: TreeOption[], parent: TreeNode | null = null) {
         rawNode: node,
         level: parent ? parent.level + 1 : 0,
         disabled: !!node.disabled,
-        isLeaf: node.isLeaf ?? children.length === 0
+        isLeaf: node.isLeaf ?? children.length === 0,
+        parentKey: parent?.key
       }
       if (children.length > 0) {
         treeNode.children = traversal(children, treeNode)
@@ -229,6 +231,79 @@ function isDisabled(node: TreeNode) {
   return !!node.disabled
 }
 function isIndeterminate(node: TreeNode) {
-  return true
+  return indeterminateRefs.value.has(node.key)
 }
+
+function findNode(key: Key) {
+  return flattenTree.value.find(node => node.key === key)
+}
+
+// 自上而下的选中
+function recurUpdateCheckedFromParent(node: TreeNode, checked: boolean) {
+  if (!node) return
+  const checkedKeys = checkedKeysRefs.value
+
+  if (checked) {
+    // 选中的时候 去掉半选状态
+    indeterminateRefs.value.delete(node.key)
+  }
+  // 维护当前的key列表
+  checkedKeys[checked ? 'add' : 'delete'](node.key)
+
+  const children = node.children
+  if (children) {
+    children.forEach(childNode => {
+      if (!childNode.disabled) {
+        recurUpdateCheckedFromParent(childNode, checked)
+      }
+    })
+  }
+}
+
+function recurUpdateCheckedFromChild(node: TreeNode) {
+  if (!node) return
+
+  // 自下而上的更新
+  if (node.parentKey) {
+    const parentNode = findNode(node.parentKey)
+
+    if (parentNode) {
+      let allChecked = true // 默认儿子们应该全部选中
+      let hasChecked = false // 儿子们有没有全部被选中
+
+      const nodes = parentNode.children
+      for (const node of nodes) {
+        if (checkedKeysRefs.value.has(node.key)) {
+          hasChecked = true // 子节点被选中了
+        } else if (indeterminateRefs.value.has(node.key)) {
+          allChecked = false
+          hasChecked = true
+        } else {
+          allChecked = false // 有一个儿子节点没有被选中
+        }
+      }
+      if (allChecked) {
+        // 如果儿子节点全部被选中
+        checkedKeysRefs.value.add(parentNode.key) // 父节点全选标识生效
+        indeterminateRefs.value.delete(parentNode.key) // 父节点半选标识移除
+      } else if (hasChecked) {
+        // 如果儿子节点有一个是没选中
+        checkedKeysRefs.value.delete(parentNode.key) // 父节点全选标识移除
+        indeterminateRefs.value.add(parentNode.key) // 父节点半选标识生效
+      }
+      recurUpdateCheckedFromChild(parentNode)
+    }
+  }
+}
+
+function toggleCheck(node: TreeNode, checked: boolean) {
+  recurUpdateCheckedFromParent(node, checked)
+  recurUpdateCheckedFromChild(node)
+}
+
+onMounted(() => {
+  checkedKeysRefs.value.forEach(key => {
+    toggleCheck(findNode(key)!, true)
+  })
+})
 </script>
