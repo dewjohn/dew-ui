@@ -10,6 +10,10 @@
           :selectedKeys="selectKeysRef"
           @select="handleSelect"
           @toggle="toggle"
+          :show-checkbox="showCheckbox"
+          :checked="isChecked(node)"
+          :disabled="isDisabled(node)"
+          :indeterminate="isIndeterminate(node)"
         ></dew-tree-node>
       </template>
     </dew-virtual-list>
@@ -214,4 +218,17 @@ function handleSelect(node: TreeNode) {
 provide(treeInjectKey, {
   slot: useSlots()
 })
+
+const checkedKeysRefs = ref(new Set(props.defaultCheckedKeys))
+const indeterminateRefs = ref<Set<Key>>(new Set())
+
+function isChecked(node: TreeNode) {
+  return checkedKeysRefs.value.has(node.key)
+}
+function isDisabled(node: TreeNode) {
+  return !!node.disabled
+}
+function isIndeterminate(node: TreeNode) {
+  return true
+}
 </script>

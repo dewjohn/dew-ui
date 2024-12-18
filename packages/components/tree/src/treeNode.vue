@@ -23,6 +23,12 @@
           <LoadingIcon v-else />
         </dew-icon>
       </span>
+      <dew-checkbox
+        v-if="showCheckbox"
+        :model-value="checked"
+        :disabled="disabled"
+        :indeterminate="indeterminate"
+      ></dew-checkbox>
       <span @click="handleSelected" :class="bem.e('label')">
         <DewTreeNodeContext :node="node"></DewTreeNodeContext>
       </span>
@@ -34,6 +40,7 @@
 import SwitcherIcon from './icon/Switcher'
 import LoadingIcon from './icon/Loading'
 import DewIcon from '@dew-ui/components/icon'
+import DewCheckbox from '@dew-ui/components/checkbox'
 import DewTreeNodeContext from './tree-node-context'
 import { createNameSpace } from '@dew-ui/utils/create'
 import { treeNodeEmits, treeNodeProps } from './tree'

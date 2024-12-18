@@ -52,34 +52,34 @@ function createLabel(level: number): string {
   return ''
 }
 
-const data = ref(createData())
-// const data = ref<TreeOption[]>([
-//   {
-//     key: '0',
-//     label: '0',
-//     children: [
-//       {
-//         key: '0-0',
-//         label: '0-0'
-//       },
-//       {
-//         disabled: true, // 这个节点被禁用了
-//         key: '0-1',
-//         label: '0-1',
-//         children: [
-//           {
-//             label: '0-1-0',
-//             key: '0-1-0'
-//           },
-//           {
-//             label: '0-1-1',
-//             key: '0-1-1'
-//           }
-//         ]
-//       }
-//     ]
-//   }
-// ])
+// const data = ref(createData())
+const data = ref<TreeOption[]>([
+  {
+    key: '0',
+    label: '0',
+    children: [
+      {
+        key: '0-0',
+        label: '0-0'
+      },
+      {
+        disabled: true, // 这个节点被禁用了
+        key: '0-1',
+        label: '0-1',
+        children: [
+          {
+            label: '0-1-0',
+            key: '0-1-0'
+          },
+          {
+            label: '0-1-1',
+            key: '0-1-1'
+          }
+        ]
+      }
+    ]
+  }
+])
 const handleLoad = (node: TreeOption) => {
   return new Promise<TreeOption[]>((resolve, reject) => {
     setTimeout(() => {
@@ -114,6 +114,8 @@ const check = ref(true)
     :on-load="handleLoad"
     v-model:selected-keys="value"
     selectable
+    show-checkbox
+    :default-checked-keys="['40', '41']"
   >
     <template #default="{ node }">{{ node.key }} - {{ node.label }}</template>
   </dew-tree>
