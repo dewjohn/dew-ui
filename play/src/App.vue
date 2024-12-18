@@ -93,7 +93,12 @@ const handleLoad = (node: TreeOption) => {
     }, 1000)
   })
 }
+
+function handleChange(val: boolean) {
+  console.log(val)
+}
 const value = ref<Key[]>([])
+const check = ref(true)
 </script>
 
 <template>
@@ -112,6 +117,16 @@ const value = ref<Key[]>([])
   >
     <template #default="{ node }">{{ node.key }} - {{ node.label }}</template>
   </dew-tree>
+
+  <!-- checkbox 组件 -->
+  {{ check }}
+  <dew-checkbox
+    v-model="check"
+    :indeterminate="true"
+    label="节点1"
+    @change="handleChange"
+    >节点2</dew-checkbox
+  >
 </template>
 
 <style scoped></style>
