@@ -38,8 +38,8 @@
 </template>
 
 <script setup lang="ts">
-import SwitcherIcon from './icon/Switcher'
-import LoadingIcon from './icon/Loading'
+import SwitcherIcon from '@dew-ui/components/internal-icon/Switcher'
+import LoadingIcon from '@dew-ui/components/internal-icon/Loading'
 import DewIcon from '@dew-ui/components/icon'
 import DewCheckbox from '@dew-ui/components/checkbox'
 import DewTreeNodeContext from './tree-node-context'

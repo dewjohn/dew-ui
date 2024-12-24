@@ -8,6 +8,7 @@ import {
   ref,
   watch
 } from 'vue'
+import { TreeNode } from '../../tree'
 
 export default defineComponent({
   name: 'DewVirtualList',
@@ -21,7 +22,7 @@ export default defineComponent({
       default: 8
     },
     items: {
-      type: Array,
+      type: Array<TreeNode>,
       default: []
     }
   },

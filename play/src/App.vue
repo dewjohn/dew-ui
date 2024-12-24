@@ -97,6 +97,11 @@ const handleLoad = (node: TreeOption) => {
 function handleChange(val: boolean) {
   console.log(val)
 }
+
+function handleClickButton(e: MouseEvent) {
+  console.log('点击按钮', e)
+}
+
 const value = ref<Key[]>([])
 const check = ref(true)
 </script>
@@ -128,6 +133,28 @@ const check = ref(true)
     label="节点1"
     @change="handleChange"
     >节点2</dew-checkbox
+  >
+  <br />
+  <!-- button 组件 -->
+  <dew-button
+    size="medium"
+    type="danger"
+    :round="true"
+    :loading="true"
+    :disabled="true"
+    icon-placement="right"
+    >按钮组件</dew-button
+  >
+  <dew-button
+    size="medium"
+    type="danger"
+    :round="true"
+    @click="handleClickButton"
+    @mousedown="handleClickButton"
+  >
+    <template #icon>
+      <dew-icon><AddCircle></AddCircle></dew-icon></template
+    >图标按钮</dew-button
   >
 </template>
 
