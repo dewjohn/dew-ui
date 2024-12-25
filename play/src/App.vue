@@ -104,6 +104,15 @@ function handleClickButton(e: MouseEvent) {
 
 const value = ref<Key[]>([])
 const check = ref(true)
+const inputValue = ref('hello')
+
+const handleBlur = (e: FocusEvent) => {
+  console.log('blur', e)
+}
+
+const handleFocus = (e: FocusEvent) => {
+  console.log('focus', e)
+}
 </script>
 
 <template>
@@ -156,6 +165,31 @@ const check = ref(true)
       <dew-icon><AddCircle></AddCircle></dew-icon></template
     >图标按钮</dew-button
   >
+
+  <!-- input 组件 -->
+  <br />
+  {{ inputValue }}
+  <dew-input
+    v-model="inputValue"
+    @blur="handleBlur"
+    @focus="handleFocus"
+    placeholder="占位符"
+    :show-password="true"
+    :clearable="true"
+  >
+    <template #prepend>前缀</template>
+    <template #prefixIcon>
+      <dew-icon>
+        <AddCircle></AddCircle>
+      </dew-icon>
+    </template>
+    <!-- <template #suffixIcon>
+      <dew-icon>
+        <AddCircle></AddCircle>
+      </dew-icon>
+    </template> -->
+    <template #append>后缀</template>
+  </dew-input>
 </template>
 
 <style scoped></style>
