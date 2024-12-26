@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { FormInstance } from '@dew-ui/components/form'
 import { Key, TreeOption } from '@dew-ui/components/tree'
 import { AddCircle } from '@vicons/ionicons5'
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 
 function createData(level = 4, parentKey = ''): any {
   if (!level) return []
@@ -113,6 +114,15 @@ const handleBlur = (e: FocusEvent) => {
 const handleFocus = (e: FocusEvent) => {
   console.log('focus', e)
 }
+
+const formState = reactive({ username: '', password: '' })
+const formRef = ref<FormInstance>()
+
+const handleFormValidate = () => {
+  formRef.value?.validate((valid, errors) => {
+    console.log(valid, errors)
+  })
+}
 </script>
 
 <template>
@@ -190,6 +200,53 @@ const handleFocus = (e: FocusEvent) => {
     </template> -->
     <template #append>后缀</template>
   </dew-input>
+  <br />
+  <!-- form 组件 -->
+  <dew-form
+    :model="formState"
+    ref="formRef"
+    :rules="{
+      username: {
+        min: 6,
+        max: 10,
+        message: '用户名6-10位',
+        trigger: ['change', 'blur']
+      }
+    }"
+  >
+    <dew-form-item
+      prop="username"
+      label="用户名"
+      :rules="[
+        { required: true, message: '请输入用户名', trigger: 'blur' },
+        {
+          min: 6,
+          max: 10,
+          message: '用户名至少6-10位',
+          trigger: ['change', 'blur']
+        }
+      ]"
+    >
+      <dew-input
+        placeholder="请输入用户名"
+        v-model="formState.username"
+      ></dew-input>
+      <template #label>用户名插槽</template>
+    </dew-form-item>
+
+    <dew-form-item
+      prop="password"
+      label="密码"
+      :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"
+    >
+      <dew-input
+        placeholder="请输入密码"
+        type="password"
+        v-model="formState.password"
+      ></dew-input>
+    </dew-form-item>
+    <dew-button @click="handleFormValidate">校验</dew-button>
+  </dew-form>
 </template>
 
 <style scoped></style>

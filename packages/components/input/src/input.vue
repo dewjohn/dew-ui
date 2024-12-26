@@ -48,6 +48,7 @@
 import { createNameSpace } from '@dew-ui/utils/create'
 import {
   computed,
+  inject,
   nextTick,
   onMounted,
   ref,
@@ -56,6 +57,9 @@ import {
   watch
 } from 'vue'
 import { inputEmits, inputProps } from './input'
+import { FormItemContextKey } from '../../form'
+
+const formItemContext = inject(FormItemContextKey)
 
 defineOptions({
   name: 'dew-input',
@@ -91,6 +95,7 @@ const handleChange = (e: Event) => {
 }
 
 const handleBlur = (e: FocusEvent) => {
+  formItemContext?.validate('blur').catch(() => {})
   emit('blur', e)
 }
 
@@ -130,6 +135,7 @@ const showClearVisible = computed(() => {
 watch(
   () => props.modelValue,
   () => {
+    formItemContext?.validate('change').catch(() => {})
     setNativeInputValue()
   }
 )

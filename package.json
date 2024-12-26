@@ -17,6 +17,7 @@
     "@dew-ui/components": "workspace:*",
     "@dew-ui/theme-chalk": "workspace:*",
     "@dew-ui/utils": "workspace:*",
+    "async-validator": "^4.2.5",
     "typescript": "^5.7.2",
     "vue": "^3.5.13"
   },
