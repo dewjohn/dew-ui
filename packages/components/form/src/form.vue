@@ -19,6 +19,11 @@ const bem = createNameSpace('form')
 
 const props = defineProps(formProps)
 
+const fields: FormItemContext[] = [] // 收集儿子校验方法
+const addField: FormContext['addField'] = context => {
+  fields.push(context)
+}
+
 // 在父级中调用所有子item的校验方法
 const validate = async (
   callback?: (valid: boolean, fields?: Values) => void
@@ -43,11 +48,6 @@ const validate = async (
       return Promise.reject(errors)
     }
   }
-}
-
-const fields: FormItemContext[] = [] // 收集儿子校验方法
-const addField: FormContext['addField'] = context => {
-  fields.push(context)
 }
 
 const context = {

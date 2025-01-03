@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { FormInstance } from '@dew-ui/components/form'
 import { Key, TreeOption } from '@dew-ui/components/tree'
+import { UploadRawFile } from '@dew-ui/components/upload'
 import { AddCircle } from '@vicons/ionicons5'
 import { reactive, ref } from 'vue'
 
@@ -123,6 +124,9 @@ const handleFormValidate = () => {
     console.log(valid, errors)
   })
 }
+const handleBeforeUpload = (rawFile: UploadRawFile) => {
+  return false
+}
 </script>
 
 <template>
@@ -231,7 +235,7 @@ const handleFormValidate = () => {
         placeholder="请输入用户名"
         v-model="formState.username"
       ></dew-input>
-      <template #label>用户名插槽</template>
+      <!-- <template #label>用户名插槽</template> -->
     </dew-form-item>
 
     <dew-form-item
@@ -247,6 +251,11 @@ const handleFormValidate = () => {
     </dew-form-item>
     <dew-button @click="handleFormValidate">校验</dew-button>
   </dew-form>
+
+  <!--  上传组件-->
+  <dew-upload multiple :before-upload="handleBeforeUpload">
+    <dew-button>点我上传</dew-button>
+  </dew-upload>
 </template>
 
 <style scoped></style>
