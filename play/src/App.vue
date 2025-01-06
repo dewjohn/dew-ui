@@ -125,7 +125,7 @@ const handleFormValidate = () => {
   })
 }
 const handleBeforeUpload = (rawFile: UploadRawFile) => {
-  return false
+  return true
 }
 </script>
 
@@ -253,7 +253,7 @@ const handleBeforeUpload = (rawFile: UploadRawFile) => {
   </dew-form>
 
   <!--  上传组件-->
-  <dew-upload multiple :before-upload="handleBeforeUpload">
+  <dew-upload multiple :before-upload="handleBeforeUpload" drag>
     <dew-button>点我上传</dew-button>
   </dew-upload>
 </template>

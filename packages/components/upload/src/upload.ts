@@ -1,11 +1,10 @@
 // 给每个文件进行包装 包装一个全新的类型
 import { ExtractPropTypes, PropType } from 'vue'
-import Upload from '../index'
 
 export interface UploadFile {
   uid?: number
   name: string
-  url: string
+  url?: string
   percentage?: number
   raw?: File
   size: number
@@ -42,6 +41,14 @@ export const baseProps = {
   headers: {
     type: Object,
     default: () => {}
+  },
+  data: {
+    type: Object,
+    default: () => {}
+  },
+  drag: {
+    type: Boolean,
+    default: false
   }
 } as const
 
@@ -63,19 +70,19 @@ export const uploadProps = {
   },
   onChange: {
     type: Function as PropType<
-      (file: UploadRawFile) => Promise<boolean> | boolean
+      (file: UploadFile) => Promise<boolean> | boolean
     >,
     default: NOOP
   },
   beforeRemove: {
     type: Function as PropType<
-      (file: UploadRawFile, uploadFiles: UploadFiles) => void
+      (file: UploadFile, uploadFiles: UploadFiles) => Promise<boolean> | boolean
     >,
     default: NOOP
   },
   onRemove: {
     type: Function as PropType<
-      (file: UploadRawFile, uploadFiles: UploadFiles) => void
+      (file: UploadFile, uploadFiles: UploadFiles) => void
     >,
     default: NOOP
   },
