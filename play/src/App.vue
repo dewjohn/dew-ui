@@ -127,6 +127,8 @@ const handleFormValidate = () => {
 const handleBeforeUpload = (rawFile: UploadRawFile) => {
   return true
 }
+
+const currentDate = ref(new Date())
 </script>
 
 <template>
@@ -256,6 +258,16 @@ const handleBeforeUpload = (rawFile: UploadRawFile) => {
   <dew-upload multiple :before-upload="handleBeforeUpload" drag>
     <dew-button>点我上传</dew-button>
   </dew-upload>
+
+  <!-- 日历组件 -->
+  <dew-calendar v-model="currentDate">
+    <template #data-cell="{ data }">
+      <p :clas="data.isSelected ? 'is-selected' : ''">
+        {{ data.day.split('-').slice(1).join('-') }}
+        {{ data.isSelected ? '√' : '' }}
+      </p>
+    </template>
+  </dew-calendar>
 </template>
 
 <style scoped></style>

@@ -11,8 +11,9 @@ import Button from '@dew-ui/components/button'
 import Input from '@dew-ui/components/input'
 import { FormItem, Form } from '@dew-ui/components/form'
 import Upload from '@dew-ui/components/upload'
+import Calendar from '@dew-ui/components/calendar'
 
-const plugins = [Icon, Tree, Checkbox, Button, Input, FormItem, Form, Upload]
+const plugins = [Icon, Tree, Checkbox, Button, Input, FormItem, Form, Upload, Calendar]
 
 const app = createApp(App)
 plugins.forEach(plugin => app.use(plugin)) // 将组件注册成全局注册，可以使用了
