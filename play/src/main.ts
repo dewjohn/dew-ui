@@ -1,18 +1,18 @@
-import { createApp } from 'vue'
-import './style.css'
-import App from './App.vue'
+import Button from '@dew-ui/components/button'
+import Calendar from '@dew-ui/components/calendar'
+import Checkbox from '@dew-ui/components/checkbox'
 
-import '@dew-ui/theme-chalk/src/index.scss'
+import { Form, FormItem } from '@dew-ui/components/form'
 
 import Icon from '@dew-ui/components/icon'
-import Tree from '@dew-ui/components/tree'
-import Checkbox from '@dew-ui/components/checkbox'
-import Button from '@dew-ui/components/button'
 import Input from '@dew-ui/components/input'
-import { FormItem, Form } from '@dew-ui/components/form'
+import Tree from '@dew-ui/components/tree'
 import Upload from '@dew-ui/components/upload'
-import Calendar from '@dew-ui/components/calendar'
 import VirtualScrollList from '@dew-ui/components/virtual-scroll-list'
+import { createApp } from 'vue'
+import App from './App.vue'
+import './style.css'
+import '@dew-ui/theme-chalk/src/index.scss'
 
 const plugins = [
   Icon,
@@ -24,7 +24,7 @@ const plugins = [
   Form,
   Upload,
   Calendar,
-  VirtualScrollList
+  VirtualScrollList,
 ]
 
 const app = createApp(App)

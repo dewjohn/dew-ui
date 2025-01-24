@@ -12,5 +12,5 @@ export default defineComponent({
         ? treeContext?.slot.default({ node })
         : node?.label
     }
-  }
+  },
 })

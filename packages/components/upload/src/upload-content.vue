@@ -1,46 +1,27 @@
-<template>
-  <div @click="handleClick" :class="[bem.b()]">
-    <template v-if="drag">
-      <UploadDrag @file="uploadFiles">
-        <slot></slot>
-      </UploadDrag>
-    </template>
-    <template v-else>
-      <slot></slot>
-    </template>
-    <input
-      ref="inputRef"
-      type="file"
-      :name="name"
-      :accept="accept"
-      :multiple="multile"
-      @change="handleChange"
-    />
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref } from 'vue'
-import { genId, UploadRawFile } from './upload'
+import type { UploadRawFile } from './upload'
 import { createNameSpace } from '@dew-ui/utils/create'
+import { ref } from 'vue'
+import { httpRequest } from './ajax'
+import { genId } from './upload'
 import { uploadContentProps } from './upload-content'
 import UploadDrag from './upload-drag.vue'
-import { httpRequest } from './ajax'
 
 defineOptions({
-  name: 'dew-upload',
-  inheritAttrs: false
+  name: 'DewUpload',
+  inheritAttrs: false,
 })
-const bem = createNameSpace('upload')
 const props = defineProps(uploadContentProps)
+const bem = createNameSpace('upload')
 const inputRef = ref<HTMLInputElement>()
 
 async function upload(file: UploadRawFile) {
   // 输入框清空
   inputRef.value!.value = '' // 上传之前清空
-  let result = await props.beforeUpload(file)
+  const result = await props.beforeUpload(file)
 
-  if (result === false) return props.onRemove(file) // 停止上传
+  if (result === false)
+    return props.onRemove(file) // 停止上传
 
   const { method, name, action, headers, data } = props
   httpRequest({
@@ -50,19 +31,19 @@ async function upload(file: UploadRawFile) {
     action,
     headers,
     data,
-    onError: e => {
+    onError: (e) => {
       props.onError(e, file)
     },
-    onSuccess: res => {
+    onSuccess: (res) => {
       props.onSuccess(res, file)
     },
-    onProgress: e => {
+    onProgress: (e) => {
       props.onProgress(e, file)
-    }
+    },
   })
 }
 
-const uploadFiles = (files: FileList) => {
+function uploadFiles(files: FileList) {
   for (let i = 0; i < files.length; i++) {
     const rawFile = files[i] as UploadRawFile
     rawFile.uid = genId()
@@ -71,13 +52,34 @@ const uploadFiles = (files: FileList) => {
   }
 }
 
-const handleChange = (e: Event) => {
+function handleChange(e: Event) {
   const files = (e.target as HTMLInputElement).files!
   uploadFiles(files)
 }
 
-const handleClick = () => {
+function handleClick() {
   inputRef.value!.value = ''
   inputRef.value!.click()
 }
 </script>
+
+<template>
+  <div :class="[bem.b()]" @click="handleClick">
+    <template v-if="drag">
+      <UploadDrag @file="uploadFiles">
+        <slot />
+      </UploadDrag>
+    </template>
+    <template v-else>
+      <slot />
+    </template>
+    <input
+      ref="inputRef"
+      type="file"
+      :name="name"
+      :accept="accept"
+      :multiple="multile"
+      @change="handleChange"
+    >
+  </div>
+</template>

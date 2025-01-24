@@ -1,37 +1,39 @@
-import { ExtractPropTypes, PropType } from 'vue'
+import type { ExtractPropTypes, PropType } from 'vue'
+import type {
+  UploadProgressEvent,
+  UploadRawFile,
+} from './upload'
 import {
   baseProps,
-  UploadProgressEvent,
   uploadProps,
-  UploadRawFile
 } from './upload'
 
-const NOOP = () => {}
+function NOOP() {}
 export const uploadContentProps = {
   ...baseProps,
-  beforeUpload: uploadProps['beforeUpload'],
+  beforeUpload: uploadProps.beforeUpload,
   onStart: {
     type: Function as PropType<(rawFile: UploadRawFile) => void>,
-    default: NOOP
+    default: NOOP,
   },
   onProgress: {
     type: Function as PropType<
       (e: UploadProgressEvent, rawFile: UploadRawFile) => void
     >,
-    default: NOOP
+    default: NOOP,
   },
   onRemove: {
     type: Function as PropType<(rawFile: UploadRawFile) => void>,
-    default: NOOP
+    default: NOOP,
   },
   onError: {
     type: Function as PropType<(err: any, rawFile: UploadRawFile) => void>,
-    default: NOOP
+    default: NOOP,
   },
   onSuccess: {
     type: Function as PropType<(res: any, rawFile: UploadRawFile) => void>,
-    default: NOOP
-  }
+    default: NOOP,
+  },
 } as const
 
 export type UploadContentProps = ExtractPropTypes<typeof uploadContentProps>

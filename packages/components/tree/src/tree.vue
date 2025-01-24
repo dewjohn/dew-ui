@@ -1,48 +1,30 @@
-<template>
-  <div :class="bem.b()">
-    <dew-virtual-list :items="flattenTree" :remain="8" :size="31">
-      <template #default="{ node }">
-        <dew-tree-node
-          :node="node"
-          :key="node.key"
-          :expanded="isExpanded(node)"
-          :loadingKeys="loadingKeysRef"
-          :selectedKeys="selectKeysRef"
-          @select="handleSelect"
-          @toggle="toggle"
-          :show-checkbox="showCheckbox"
-          :checked="isChecked(node)"
-          :disabled="isDisabled(node)"
-          :indeterminate="isIndeterminate(node)"
-          @check="toggleCheck"
-        ></dew-tree-node>
-      </template>
-    </dew-virtual-list>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { computed, onMounted, provide, ref, useSlots } from 'vue'
-import {
+import type {
   Key,
-  treeEmitts,
-  treeInjectKey,
   TreeNode,
   TreeOption,
-  treeProps
 } from './tree'
-import { watch } from 'vue'
-import { createNameSpace } from '@dew-ui/utils/create'
-import DewTreeNode from './treeNode.vue'
 import DewVirtualList from '@dew-ui/components/virtual-list'
+import { createNameSpace } from '@dew-ui/utils/create'
+import { computed, onMounted, provide, ref, useSlots, watch } from 'vue'
+import {
+  treeEmitts,
+  treeInjectKey,
+  treeProps,
+} from './tree'
+import DewTreeNode from './treeNode.vue'
 
 defineOptions({
-  name: 'dew-tree'
+  name: 'DewTree',
 })
+
+const props = defineProps(treeProps)
+
+// 实现选中节点
+const emit = defineEmits(treeEmitts)
 
 const bem = createNameSpace('tree')
 
-const props = defineProps(treeProps)
 // 有了props要对用户的数据进行格式化，格式化一个固定的结果
 // label, key, children
 const tree = ref<TreeNode[]>([])
@@ -59,19 +41,19 @@ function createOption(key: string, label: string, children: string) {
     },
     getChildren(node: TreeOption) {
       return node[children] as TreeOption[] // 用户传递的children
-    }
+    },
   }
 }
 
 const treeOptions = createOption(
   props.keyField,
   props.labelFiled,
-  props.childrenField
+  props.childrenField,
 )
 function createTree(data: TreeOption[], parent: TreeNode | null = null) {
   function traversal(data: TreeOption[], parent: TreeNode | null = null) {
-    return data.map(node => {
-      let children = treeOptions.getChildren(node) || []
+    return data.map((node) => {
+      const children = treeOptions.getChildren(node) || []
       const treeNode: TreeNode = {
         key: treeOptions.getKey(node),
         label: treeOptions.getLabel(node),
@@ -80,7 +62,7 @@ function createTree(data: TreeOption[], parent: TreeNode | null = null) {
         level: parent ? parent.level + 1 : 0,
         disabled: !!node.disabled,
         isLeaf: node.isLeaf ?? children.length === 0,
-        parentKey: parent?.key
+        parentKey: parent?.key,
       }
       if (children.length > 0) {
         treeNode.children = traversal(children, treeNode)
@@ -100,15 +82,15 @@ watch(
     tree.value = createTree(data)
     console.log(tree.value)
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 // 需要展开的key有哪些
 const expandedKeySet = ref(new Set(props.defaultExpandedKeys))
 
 const flattenTree = computed(() => {
-  let expandedKeys = expandedKeySet.value // 要展开的keys有哪些
-  let flattenNodes: TreeNode[] = [] // 拍平之后的结果
+  const expandedKeys = expandedKeySet.value // 要展开的keys有哪些
+  const flattenNodes: TreeNode[] = [] // 拍平之后的结果
   const nodes = tree.value || [] // 被格式化的节点
   const stack: TreeNode[] = [] // 用于被遍历的栈
   for (let i = nodes.length - 1; i >= 0; i--) {
@@ -118,7 +100,8 @@ const flattenTree = computed(() => {
   // 深度遍历
   while (stack.length) {
     const node = stack.pop()
-    if (!node) continue
+    if (!node)
+      continue
     flattenNodes.push(node)
     if (expandedKeys.has(node.key)) {
       const children = node.children
@@ -143,7 +126,7 @@ function triggerLoading(node: TreeNode) {
       loadingKeys.add(node.key)
       const { onLoad } = props
       if (onLoad) {
-        onLoad!(node.rawNode).then(children => {
+        onLoad!(node.rawNode).then((children) => {
           node.rawNode.children = children
           // 更新自定义的node
           node.children = createTree(children, node)
@@ -170,47 +153,49 @@ function toggle(node: TreeNode) {
   // 如果当前这个节点 正在加载中 不能收起
   if (expandedKeys.has(node.key) && !loadingKeysRef.value.has(node.key)) {
     collpase(node)
-  } else {
+  }
+  else {
     expand(node)
   }
 }
-
-// 实现选中节点
-const emit = defineEmits(treeEmitts)
 
 const selectKeysRef = ref<Key[]>([])
 
 watch(
   () => props.selectedKeys,
-  value => {
+  (value) => {
     if (value) {
       selectKeysRef.value = value
       console.log('selectedKeys', value)
     }
   },
   {
-    immediate: true
-  }
+    immediate: true,
+  },
 )
 // 处理选中的节点
 function handleSelect(node: TreeNode) {
   let keys = Array.from(selectKeysRef.value)
 
-  if (!props.selectable) return // 如果不能选择什么都不用做了
+  if (!props.selectable)
+    return // 如果不能选择什么都不用做了
 
   if (props.multiple) {
     // 多选
     const index = keys.findIndex(key => key === node.key)
     if (index > -1) {
       keys.splice(index, 1) // 取消选中
-    } else {
+    }
+    else {
       keys.push(node.key)
     }
-  } else {
+  }
+  else {
     // 单选
     if (keys.includes(node.key)) {
       keys = [] // 取消单选
-    } else {
+    }
+    else {
       keys = [node.key] // 选中
     }
   }
@@ -218,7 +203,7 @@ function handleSelect(node: TreeNode) {
 }
 
 provide(treeInjectKey, {
-  slot: useSlots()
+  slot: useSlots(),
 })
 
 const checkedKeysRefs = ref(new Set(props.defaultCheckedKeys))
@@ -240,7 +225,8 @@ function findNode(key: Key) {
 
 // 自上而下的选中
 function recurUpdateCheckedFromParent(node: TreeNode, checked: boolean) {
-  if (!node) return
+  if (!node)
+    return
   const checkedKeys = checkedKeysRefs.value
 
   if (checked) {
@@ -252,7 +238,7 @@ function recurUpdateCheckedFromParent(node: TreeNode, checked: boolean) {
 
   const children = node.children
   if (children) {
-    children.forEach(childNode => {
+    children.forEach((childNode) => {
       if (!childNode.disabled) {
         recurUpdateCheckedFromParent(childNode, checked)
       }
@@ -261,7 +247,8 @@ function recurUpdateCheckedFromParent(node: TreeNode, checked: boolean) {
 }
 
 function recurUpdateCheckedFromChild(node: TreeNode) {
-  if (!node) return
+  if (!node)
+    return
 
   // 自下而上的更新
   if (node.parentKey) {
@@ -275,10 +262,12 @@ function recurUpdateCheckedFromChild(node: TreeNode) {
       for (const node of nodes) {
         if (checkedKeysRefs.value.has(node.key)) {
           hasChecked = true // 子节点被选中了
-        } else if (indeterminateRefs.value.has(node.key)) {
+        }
+        else if (indeterminateRefs.value.has(node.key)) {
           allChecked = false
           hasChecked = true
-        } else {
+        }
+        else {
           allChecked = false // 有一个儿子节点没有被选中
         }
       }
@@ -286,7 +275,8 @@ function recurUpdateCheckedFromChild(node: TreeNode) {
         // 如果儿子节点全部被选中
         checkedKeysRefs.value.add(parentNode.key) // 父节点全选标识生效
         indeterminateRefs.value.delete(parentNode.key) // 父节点半选标识移除
-      } else if (hasChecked) {
+      }
+      else if (hasChecked) {
         // 如果儿子节点有一个是没选中
         checkedKeysRefs.value.delete(parentNode.key) // 父节点全选标识移除
         indeterminateRefs.value.add(parentNode.key) // 父节点半选标识生效
@@ -302,8 +292,31 @@ function toggleCheck(node: TreeNode, checked: boolean) {
 }
 
 onMounted(() => {
-  checkedKeysRefs.value.forEach(key => {
+  checkedKeysRefs.value.forEach((key) => {
     toggleCheck(findNode(key)!, true)
   })
 })
 </script>
+
+<template>
+  <div :class="bem.b()">
+    <DewVirtualList :items="flattenTree" :remain="8" :size="31">
+      <template #default="{ node }">
+        <DewTreeNode
+          :key="node.key"
+          :node="node"
+          :expanded="isExpanded(node)"
+          :loading-keys="loadingKeysRef"
+          :selected-keys="selectKeysRef"
+          :show-checkbox="showCheckbox"
+          :checked="isChecked(node)"
+          :disabled="isDisabled(node)"
+          :indeterminate="isIndeterminate(node)"
+          @select="handleSelect"
+          @toggle="toggle"
+          @check="toggleCheck"
+        />
+      </template>
+    </DewVirtualList>
+  </div>
+</template>

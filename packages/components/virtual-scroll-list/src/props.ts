@@ -1,37 +1,37 @@
-import { DefineComponent, ExtractPropTypes, PropType } from 'vue'
+import type { DefineComponent, ExtractPropTypes, PropType } from 'vue'
 
 export const virtualProps = {
   dataSources: {
     type: Array,
     required: true,
-    default: () => []
+    default: () => [],
   },
   dataKey: {
     type: String,
-    required: true
+    required: true,
   },
   keeps: {
     type: Number,
-    default: 30
+    default: 30,
   },
   estimateSize: {
     type: Number,
-    default: 80
+    default: 80,
   },
   dataComponent: {
     type: [Object, Function] as PropType<DefineComponent<{}, {}, any>>,
-    required: true
-  }
+    required: true,
+  },
 } as const
 
-export type RangeOptions = {
+export interface RangeOptions {
   start: number
   end: number
   padFront: number
   padBehind: number
 }
 
-export type VirtualOptions = {
+export interface VirtualOptions {
   keeps: number
   buffer: number
   estimateSize: number
@@ -40,15 +40,15 @@ export type VirtualOptions = {
 
 export const virtualItemProps = {
   uniqueKey: {
-    type: [String, Number] as PropType<string | number>
+    type: [String, Number] as PropType<string | number>,
   },
   source: {
     type: Object,
-    required: true
+    required: true,
   },
   component: {
-    type: [Object, Function] as PropType<DefineComponent<{}, {}, any>>
-  }
+    type: [Object, Function] as PropType<DefineComponent<{}, {}, any>>,
+  },
 } as const
 
 export type VirtualItemProps = ExtractPropTypes<typeof virtualItemProps>

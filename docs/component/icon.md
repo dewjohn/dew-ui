@@ -32,8 +32,8 @@ import { CashOutline } from '@vicons/ionicons5'
 </script>
 
 <template>
-  <dew-icon :color="'yellow'" :size="40">
-    <CashOutline></CashOutline>
+  <dew-icon color="yellow" :size="40">
+    <CashOutline />
   </dew-icon>
 </template>
 ```

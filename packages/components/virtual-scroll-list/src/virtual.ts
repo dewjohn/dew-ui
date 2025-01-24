@@ -1,17 +1,17 @@
-import { RangeOptions, updateType, VirtualOptions } from './props'
+import type { RangeOptions, updateType, VirtualOptions } from './props'
 
 const enum CALC_TYPE {
   INIT = 'INIT',
   FIXED = 'FIXED',
-  DYNAMIC = 'DYNAMIC'
+  DYNAMIC = 'DYNAMIC',
 }
 
-export const initVirtual = (param: VirtualOptions, update: updateType) => {
+export function initVirtual(param: VirtualOptions, update: updateType) {
   const range: RangeOptions = {
     start: 0,
     end: 0,
     padFront: 0,
-    padBehind: 0
+    padBehind: 0,
   }
   let offsetValue = 0 // 没有触发滚动之前的变量
   let fixedSizeVal = 0 // 默认值是0
@@ -48,7 +48,8 @@ export const initVirtual = (param: VirtualOptions, update: updateType) => {
       end = total - 1
       // 最后滑动到了100条 但是要显示71 - 100
       // start = 90 - end=100
-    } else if (end - start < keeps - 1) {
+    }
+    else if (end - start < keeps - 1) {
       start = end - keeps + 1
     }
     updateRange(start, end)
@@ -104,7 +105,8 @@ export const initVirtual = (param: VirtualOptions, update: updateType) => {
     if (calcType === CALC_TYPE.INIT) {
       // 第一个元素加载完毕后默认认为是固定高度
       fixedSizeVal = size
-    } else if (calcType === CALC_TYPE.FIXED && fixedSizeVal !== size) {
+    }
+    else if (calcType === CALC_TYPE.FIXED && fixedSizeVal !== size) {
       calcType = CALC_TYPE.DYNAMIC
       fixedSizeVal = 0 // 默认采用estimateSize
     }
@@ -113,6 +115,6 @@ export const initVirtual = (param: VirtualOptions, update: updateType) => {
   checkRange(0, param.keeps - 1)
   return {
     handleScroll,
-    saveSize
+    saveSize,
   }
 }

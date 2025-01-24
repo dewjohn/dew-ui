@@ -1,4 +1,4 @@
-import { ExtractPropTypes, PropType } from 'vue'
+import type { ExtractPropTypes, PropType } from 'vue'
 
 export type Size = 'small' | 'medium' | 'large'
 
@@ -26,27 +26,27 @@ export const buttonProps = {
         'warning',
         'danger',
         'info',
-        'default'
+        'default',
       ].includes(val)
     },
-    default: ''
+    default: '',
   },
   round: Boolean,
   loading: Boolean,
   disabled: Boolean,
   nativeType: {
     type: String as PropType<NativeType>,
-    default: 'button'
+    default: 'button',
   },
   iconPlacement: {
     type: String as PropType<Placement>,
-    default: 'left'
-  }
+    default: 'left',
+  },
 } as const
 
 export const buttonEmit = {
   click: (e: MouseEvent) => e instanceof MouseEvent,
-  mousedown: (e: MouseEvent) => e instanceof MouseEvent
+  mousedown: (e: MouseEvent) => e instanceof MouseEvent,
 }
 
 export type ButtonProps = ExtractPropTypes<typeof buttonProps>

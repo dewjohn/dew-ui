@@ -1,50 +1,46 @@
-<template>
-  <form :class="[bem.b()]">
-    <slot></slot>
-  </form>
-</template>
-
 <script setup lang="ts">
+import type { Values } from 'async-validator'
+import type { FormContext } from './form'
+import type { FormItemContext } from './form-item'
 import { createNameSpace } from '@dew-ui/utils/create'
-import { FormContext, FormContextKey, formProps } from './form'
 import { provide } from 'vue'
-import { FormItemContext } from './form-item'
-import { Values } from 'async-validator'
+import { FormContextKey, formProps } from './form'
 
 defineOptions({
-  name: 'dew-form'
+  name: 'DewForm',
 })
-
-const bem = createNameSpace('form')
 
 const props = defineProps(formProps)
 
+const bem = createNameSpace('form')
+
 const fields: FormItemContext[] = [] // 收集儿子校验方法
-const addField: FormContext['addField'] = context => {
+const addField: FormContext['addField'] = (context) => {
   fields.push(context)
 }
 
 // 在父级中调用所有子item的校验方法
-const validate = async (
-  callback?: (valid: boolean, fields?: Values) => void
-) => {
+async function validate(callback?: (valid: boolean, fields?: Values) => void) {
   let errors: Values = {}
   for (const field of fields) {
     try {
       await field.validate('')
-    } catch (error) {
+    }
+    catch (error) {
       errors = {
         ...errors,
-        ...(error as Values).fields
+        ...(error as Values).fields,
       }
     }
   }
   if (Object.keys(errors).length === 0) {
     return callback?.(true)
-  } else {
+  }
+  else {
     if (callback) {
       callback?.(false, errors)
-    } else {
+    }
+    else {
       return Promise.reject(errors)
     }
   }
@@ -52,14 +48,20 @@ const validate = async (
 
 const context = {
   ...props,
-  addField
+  addField,
 }
 provide(FormContextKey, context)
 
 // 将form表单的校验方法暴露给用户，用户可以通过ref来进行检测
 defineExpose({
-  validate
+  validate,
 })
 </script>
+
+<template>
+  <form :class="[bem.b()]">
+    <slot />
+  </form>
+</template>
 
 <style scoped></style>

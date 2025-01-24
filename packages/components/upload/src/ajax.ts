@@ -1,5 +1,5 @@
-import { UploadProgressEvent } from './upload'
-import { RequestOptions } from './upload-content'
+import type { UploadProgressEvent } from './upload'
+import type { RequestOptions } from './upload-content'
 
 export function httpRequest(options: RequestOptions) {
   const xhr = new XMLHttpRequest()
@@ -7,7 +7,7 @@ export function httpRequest(options: RequestOptions) {
 
   xhr.open(options.method, action, true)
 
-  xhr.upload.addEventListener('progress', e => {
+  xhr.upload.addEventListener('progress', (e) => {
     const progressEvents = e as UploadProgressEvent
     progressEvents.percentage = e.total > 0 ? (e.loaded / e.total) * 100 : 0
 
@@ -32,12 +32,13 @@ export function httpRequest(options: RequestOptions) {
   xhr.onload = function () {
     if (xhr.status < 300 && xhr.status >= 200) {
       options.onSuccess(xhr.response)
-    } else {
+    }
+    else {
       options.onError({ status: xhr.status })
     }
   }
 
-  xhr.addEventListener('error', err => {
+  xhr.addEventListener('error', (err) => {
     options.onError(err)
   })
 

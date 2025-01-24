@@ -1,51 +1,19 @@
-<template>
-  <button
-    :class="[
-      bem.b(),
-      bem.m(type),
-      bem.m(size),
-      bem.is('round', round),
-      bem.is('loading', loading),
-      bem.is('disabled', disabled)
-    ]"
-    :type="nativeType"
-    :disabled="disabled || loading"
-    @click="emitClick"
-    @mousedown="emitMouseDown"
-  >
-    <template v-if="iconPlacement === 'left'">
-      <dew-icon>
-        <LoadingIcon v-if="loading"></LoadingIcon>
-        <template v-else-if="slots.icon">
-          <component :is="slots.icon"></component>
-        </template>
-      </dew-icon>
-    </template>
-    <slot></slot>
-    <template v-if="iconPlacement === 'right'">
-      <dew-icon>
-        <LoadingIcon v-if="loading"></LoadingIcon>
-        <template v-else-if="slots.icon">
-          <component :is="slots.icon"></component>
-        </template>
-      </dew-icon>
-    </template>
-  </button>
-</template>
-
 <script setup lang="ts">
-import { createNameSpace } from '@dew-ui/utils/create'
-import { buttonEmit, buttonProps } from './button'
-import LoadingIcon from '../../internal-icon/Loading'
+import type { VNodeChild } from 'vue'
 import DewIcon from '@dew-ui/components/icon'
-import { useSlots, VNodeChild } from 'vue'
+import { createNameSpace } from '@dew-ui/utils/create'
+import { useAttrs, useSlots } from 'vue'
+import LoadingIcon from '../../internal-icon/Loading'
+import { buttonEmit, buttonProps } from './button'
+
 defineOptions({
-  name: 'dew-button',
-  inheritAttrs: false
+  name: 'DewButton',
+  inheritAttrs: false,
 })
-const bem = createNameSpace('button')
 const props = defineProps(buttonProps)
 const emit = defineEmits(buttonEmit)
+const bem = createNameSpace('button')
+const attrs = useAttrs()
 
 interface ButtonSlots {
   default?: () => VNodeChild
@@ -54,13 +22,49 @@ interface ButtonSlots {
 
 const slots = useSlots() as ButtonSlots
 
-const emitClick = (e: MouseEvent) => {
+function emitClick(e: MouseEvent) {
   emit('click', e)
 }
 
-const emitMouseDown = (e: MouseEvent) => {
+function emitMouseDown(e: MouseEvent) {
   emit('mousedown', e)
 }
 </script>
+
+<template>
+  <button
+    v-bind="attrs"
+    :class="[
+      bem.b(),
+      bem.m(type),
+      bem.m(size),
+      bem.is('round', round),
+      bem.is('loading', loading),
+      bem.is('disabled', disabled),
+    ]"
+    :type="nativeType"
+    :disabled="disabled || loading"
+    @click="emitClick"
+    @mousedown="emitMouseDown"
+  >
+    <template v-if="iconPlacement === 'left' && slots.icon">
+      <DewIcon>
+        <LoadingIcon v-if="loading" />
+        <template v-else-if="slots.icon">
+          <component :is="slots.icon" />
+        </template>
+      </DewIcon>
+    </template>
+    <slot />
+    <template v-if="iconPlacement === 'right'">
+      <DewIcon>
+        <LoadingIcon v-if="loading" />
+        <template v-else-if="slots.icon">
+          <component :is="slots.icon" />
+        </template>
+      </DewIcon>
+    </template>
+  </button>
+</template>
 
 <style scoped></style>

@@ -1,3 +1,12 @@
+<script setup lang="ts">
+defineProps({
+  source: {
+    type: Object,
+    default: () => ({}),
+  },
+})
+</script>
+
 <template>
   <div class="item" :style="{ height: '80px' }" :data-index="source.index">
     <div class="head">
@@ -9,14 +18,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps({
-  source: {
-    type: Object,
-    default: () => ({})
-  }
-})
-</script>
 
 <style scoped></style>

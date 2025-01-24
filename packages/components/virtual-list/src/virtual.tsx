@@ -1,30 +1,29 @@
+import type { TreeNode } from '../../tree'
 import { createNameSpace } from '@dew-ui/utils/create'
 import {
   computed,
   defineComponent,
-  h,
   onMounted,
   reactive,
   ref,
-  watch
+  watch,
 } from 'vue'
-import { TreeNode } from '../../tree'
 
 export default defineComponent({
   name: 'DewVirtualList',
   props: {
     size: {
       type: Number,
-      default: 35
+      default: 35,
     },
     remain: {
       type: Number,
-      default: 8
+      default: 8,
     },
     items: {
       type: Array<TreeNode>,
-      default: []
-    }
+      default: [],
+    },
   },
   setup(props, { slots }) {
     const bem = createNameSpace('vl')
@@ -34,7 +33,7 @@ export default defineComponent({
     const state = reactive({
       // 计算显示的区域
       start: 0,
-      end: props.remain
+      end: props.remain,
     })
     // 为了美观多补几条数据
     const prev = computed(() => {
@@ -62,8 +61,8 @@ export default defineComponent({
     }
 
     function initWrapper() {
-      wrapperRef.value!.style.height = props.remain * props.size + 'px'
-      barRef.value!.style.height = props.items.length * props.size + 'px'
+      wrapperRef.value!.style.height = `${props.remain * props.size}px`
+      barRef.value!.style.height = `${props.items.length * props.size}px`
     }
 
     watch(() => props.items, initWrapper)
@@ -85,5 +84,5 @@ export default defineComponent({
         </div>
       )
     }
-  }
+  },
 })

@@ -1,4 +1,5 @@
-import { defineComponent, h } from 'vue'
+import { defineComponent } from 'vue'
+
 export default defineComponent({
   name: 'SwitcherIcon',
   render() {
@@ -7,5 +8,5 @@ export default defineComponent({
         <path d="M16 9.162a1 1 0 011.648-.762l17.456 14.838a1 1 0 010 1.524L17.648 39.599A1 1 0 0116 38.838V9.162z" />
       </svg>
     )
-  }
+  },
 })

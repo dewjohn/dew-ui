@@ -1,49 +1,32 @@
-<template>
-  <div
-    :class="[
-      bem.b(),
-      bem.is('success', validateState === 'success'),
-      bem.is('error', validateState === 'error')
-    ]"
-  >
-    <label :class="bem.e('label')">
-      <slot name="label">{{ label }}</slot>
-    </label>
-    <div :class="bem.e('content')">
-      <slot></slot>
-      <div :class="bem.e('error')">
-        <slot name="error">{{ validateMessage }}</slot>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { createNameSpace } from '@dew-ui/utils/create'
-import { computed, inject, onMounted, provide, ref, toRefs } from 'vue'
-import {
+import type { Values } from 'async-validator'
+import type {
   Arrayable,
   FormItemContext,
+  FormItemRule,
+  FormItemValidateState,
+} from './form-item'
+import { createNameSpace } from '@dew-ui/utils/create'
+import AsyncValidator from 'async-validator'
+import { computed, inject, onMounted, provide, ref } from 'vue'
+import { FormContextKey } from './form'
+import {
   FormItemContextKey,
   formItemProps,
-  FormItemRule,
-  FormItemValidateState
 } from './form-item'
-import { FormContextKey } from './form'
-import AsyncValidator, { Values } from 'async-validator'
 
 defineOptions({
-  name: 'dew-form-item'
+  name: 'DewFormItem',
 })
 
-const bem = createNameSpace('form-item')
 const props = defineProps(formItemProps)
+const bem = createNameSpace('form-item')
 const formContext = inject(FormContextKey)
 
 const validateState = ref<FormItemValidateState>('')
 const validateMessage = ref('')
 
-const converArray = (rules: Arrayable<FormItemRule> | undefined) => {
+function converArray(rules: Arrayable<FormItemRule> | undefined) {
   return rules ? (Array.isArray(rules) ? rules : [rules]) : []
 }
 
@@ -59,25 +42,27 @@ const _rules = computed(() => {
   return mergeRules
 })
 
-const getRuleFilter = (trigger: string) => {
+function getRuleFilter(trigger: string) {
   // blur change ''
   const rules = _rules.value
-  return rules.filter(rule => {
-    if (!rule.trigger || !trigger) return true // 这种情况意味着无论如何都要校验
+  return rules.filter((rule) => {
+    if (!rule.trigger || !trigger)
+      return true // 这种情况意味着无论如何都要校验
     if (Array.isArray(rule.trigger)) {
       return rule.trigger.includes(trigger)
-    } else {
+    }
+    else {
       return rule.trigger === trigger
     }
   })
 }
 
-const onValidationSuccessed = () => {
+function onValidationSuccessed() {
   validateState.value = 'success'
   validateMessage.value = ''
 }
 
-const onValidationFailed = (err: Values) => {
+function onValidationFailed(err: Values) {
   validateState.value = 'error'
   const { errors } = err
   validateMessage.value = errors ? errors[0].message : ''
@@ -89,17 +74,17 @@ const validate: FormItemContext['validate'] = async (trigger, callback?) => {
 
   const modelName = props.prop!
   const validator = new AsyncValidator({
-    [modelName]: rules
+    [modelName]: rules,
   })
   const model = formContext!.model!
   return validator
     .validate({
-      [modelName]: model[modelName]
+      [modelName]: model[modelName],
     })
     .then(() => {
       onValidationSuccessed()
     })
-    .catch(err => {
+    .catch((err) => {
       onValidationFailed(err)
       return Promise.reject(err)
     })
@@ -107,7 +92,7 @@ const validate: FormItemContext['validate'] = async (trigger, callback?) => {
 
 const context: FormItemContext = {
   ...props,
-  validate
+  validate,
 }
 
 provide(FormItemContextKey, context)
@@ -116,5 +101,27 @@ onMounted(() => {
   formContext?.addField(context) // 将自己的上下文给父级
 })
 </script>
+
+<template>
+  <div
+    :class="[
+      bem.b(),
+      bem.is('success', validateState === 'success'),
+      bem.is('error', validateState === 'error'),
+    ]"
+  >
+    <label :class="bem.e('label')">
+      <slot name="label">{{ label }}</slot>
+    </label>
+    <div :class="bem.e('content')">
+      <slot />
+      <div :class="bem.e('error')">
+        <slot name="error">
+          {{ validateMessage }}
+        </slot>
+      </div>
+    </div>
+  </div>
+</template>
 
 <style scoped></style>

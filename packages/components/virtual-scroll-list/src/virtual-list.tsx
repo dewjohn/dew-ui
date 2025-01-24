@@ -1,5 +1,6 @@
-import { defineComponent, h, onBeforeMount, ref } from 'vue'
-import { RangeOptions, updateType, virtualProps } from './props'
+import type { RangeOptions, updateType } from './props'
+import { defineComponent, onBeforeMount, ref } from 'vue'
+import { virtualProps } from './props'
 import { initVirtual } from './virtual'
 import VirtualItem from './virtual-item'
 
@@ -18,7 +19,7 @@ export default defineComponent({
     const getUniqueIdFormDataSource = () => {
       const { dataSources, dataKey } = props
       return dataSources.map(
-        dataSource => (dataSource as any)[dataKey]
+        dataSource => (dataSource as any)[dataKey],
       ) as string[]
     }
     const installVirtual = () => {
@@ -28,9 +29,9 @@ export default defineComponent({
           keeps: props.keeps,
           buffer: Math.round(props.keeps / 3),
           uniqueIds: getUniqueIdFormDataSource(),
-          estimateSize: props.estimateSize
+          estimateSize: props.estimateSize,
         },
-        update
+        update,
       )
     }
 
@@ -59,7 +60,8 @@ export default defineComponent({
               source={dataSource}
               onItemResize={onItemResize}
               component={PropsComponent}
-            ></VirtualItem>
+            >
+            </VirtualItem>,
           )
         }
       }
@@ -72,7 +74,7 @@ export default defineComponent({
     return () => {
       const { padFront, padBehind } = range.value!
       const paddinStyle = {
-        padding: `${padFront}px 0 ${padBehind}px 0`
+        padding: `${padFront}px 0 ${padBehind}px 0`,
       }
       return (
         <div onScroll={onScroll} ref={root}>
@@ -82,5 +84,5 @@ export default defineComponent({
         </div>
       )
     }
-  }
+  },
 })

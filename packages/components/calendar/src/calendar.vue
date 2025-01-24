@@ -1,69 +1,29 @@
-<template>
-  <div :class="bem.b()">
-    <div :class="bem.e('header')">
-      <div :class="bem.e('title')">{{ currentDate }}</div>
-      <div :class="bem.e('button-group')">
-        <dew-button @click="selectDate('prev-year')">前一年</dew-button>
-        <dew-button @click="selectDate('prev-month')">上个月</dew-button>
-        <dew-button @click="selectDate('today')">今天</dew-button>
-        <dew-button @click="selectDate('next-month')">下个月</dew-button>
-        <dew-button @click="selectDate('next-year')">下个年</dew-button>
-      </div>
-    </div>
-    <div :class="bem.e('body')">
-      <table :class="bemTable.b()" cellpadding="0" cellspacing="0">
-        <thead>
-          <tr>
-            <th v-for="day in weekDays">{{ day }}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, rid) in rows" :key="rid">
-            <td
-              v-for="(cell, cid) in row"
-              :key="cid"
-              @click="handlePick(cell)"
-              :class="[
-                bemTableCell.b(),
-                bemTableCell.e(cell.type),
-                getCellClass(cell)
-              ]"
-            >
-              <slot name="data-cell" :data="getSlotData(cell)">
-                {{ cell.text }}
-              </slot>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { createNameSpace } from '@dew-ui/utils/create'
-import DewButton from '@dew-ui/components/button'
-import dayjs from 'dayjs'
 import type { Dayjs } from 'dayjs'
-import 'dayjs/locale/zh-cn'
-import { computed, ref } from 'vue'
-import {
+import type {
   CalendarDateCell,
   CalendarDateCellType,
   CalendarDateType,
-  calendarEmits,
-  calendarProps
 } from './calendar'
-dayjs.locale('zh-cn')
+import DewButton from '@dew-ui/components/button'
+import { createNameSpace } from '@dew-ui/utils/create'
+import dayjs from 'dayjs'
+import { computed, ref } from 'vue'
+import {
+  calendarEmits,
+  calendarProps,
+} from './calendar'
+import 'dayjs/locale/zh-cn'
+
 defineOptions({
-  name: 'dew-calendar'
+  name: 'DewCalendar',
 })
+const props = defineProps(calendarProps)
+const emit = defineEmits(calendarEmits)
+dayjs.locale('zh-cn')
 const bem = createNameSpace('calendar')
 const bemTable = createNameSpace('calendar-table')
 const bemTableCell = createNameSpace('calendar-table-cell')
-
-const props = defineProps(calendarProps)
-const emit = defineEmits(calendarEmits)
 
 const selectedDay = ref<Dayjs>() // 标识用户选中的是哪一个
 const now = dayjs()
@@ -73,12 +33,12 @@ const nextMonthDay = computed(() => date.value.add(1, 'month').date(1))
 const prevYearDay = computed(() => date.value.subtract(1, 'year').date(1))
 const nextYearDay = computed(() => date.value.add(1, 'year').date(1))
 
-const pickDay = (day: Dayjs) => {
+function pickDay(day: Dayjs) {
   selectedDay.value = day
   emit('update:modelValue', day.toDate())
 }
 
-const getCellClass = ({ text, type }: CalendarDateCell) => {
+function getCellClass({ text, type }: CalendarDateCell) {
   const clazz: string[] = [type]
   const date = formatter(text, type)
   if (date.isSame(selectedDay.value, 'day')) {
@@ -90,7 +50,7 @@ const getCellClass = ({ text, type }: CalendarDateCell) => {
   return clazz
 }
 
-const formatter = (text: number, type: CalendarDateCellType): Dayjs => {
+function formatter(text: number, type: CalendarDateCellType): Dayjs {
   switch (type) {
     case 'prev':
       return date.value.startOf('month').subtract(1, 'month').date(text)
@@ -101,19 +61,19 @@ const formatter = (text: number, type: CalendarDateCellType): Dayjs => {
   }
 }
 
-const handlePick = ({ text, type }: CalendarDateCell) => {
+function handlePick({ text, type }: CalendarDateCell) {
   // 根据text和type获取日期来更新date
   const day = formatter(text, type)
   pickDay(day)
 }
 
-const selectDate = (type: CalendarDateType) => {
+function selectDate(type: CalendarDateType) {
   const map: Record<CalendarDateType, Dayjs> = {
     'prev-month': prevMonthDay.value,
     'next-month': nextMonthDay.value,
     'prev-year': prevYearDay.value,
     'next-year': nextYearDay.value,
-    today: now
+    'today': now,
   }
   const day = map[type]
   pickDay(day)
@@ -123,7 +83,8 @@ const selectDate = (type: CalendarDateType) => {
 const date = computed(() => {
   if (!props.modelValue) {
     return now
-  } else {
+  }
+  else {
     return dayjs(props.modelValue)
   }
 })
@@ -138,12 +99,12 @@ const weekMaping = [
   '星期三',
   '星期四',
   '星期五',
-  '星期六'
+  '星期六',
 ]
 const weekDays = computed(() => {
   return [
     ...weekMaping.slice(firstDayOfWeek),
-    ...weekMaping.slice(0, firstDayOfWeek)
+    ...weekMaping.slice(0, firstDayOfWeek),
   ]
 })
 
@@ -163,24 +124,24 @@ const rows = computed(() => {
     .map((_, idx) => lastDay - (count - idx - 1))
     .map(_ => ({
       text: _,
-      type: 'prev'
+      type: 'prev',
     }))
   // 获取当前月有多少天
   const days = date.value.daysInMonth()
   const currentMonthDays: CalendarDateCell[] = Array.from({ length: days }).map(
     (_, idx) => ({
       text: idx + 1,
-      type: 'current'
-    })
+      type: 'current',
+    }),
   )
   list = [...prevMonthDays, ...currentMonthDays]
 
-  let remaining = 42 - list.length
+  const remaining = 42 - list.length
   const nextMonthDays: CalendarDateCell[] = Array.from({
-    length: remaining
+    length: remaining,
   }).map((_, idx) => ({
     text: idx + 1,
-    type: 'next'
+    type: 'next',
   }))
 
   list = [...list, ...nextMonthDays]
@@ -196,15 +157,71 @@ const currentDate = computed(() => {
   return `${date.value.year()}年${date.value.month() + 1}月${date.value.date()}日`
 })
 
-const getSlotData = ({ text, type }: CalendarDateCell) => {
+function getSlotData({ text, type }: CalendarDateCell) {
   const day = formatter(text, type)
   return {
     isSelected: day.isSame(selectedDay.value),
     day: day.format('YYYY-MM-DD'),
     date: day.toDate(),
-    type
+    type,
   }
 }
 </script>
+
+<template>
+  <div :class="bem.b()">
+    <div :class="bem.e('header')">
+      <div :class="bem.e('title')">
+        {{ currentDate }}
+      </div>
+      <div :class="bem.e('button-group')">
+        <DewButton @click="selectDate('prev-year')">
+          前一年
+        </DewButton>
+        <DewButton @click="selectDate('prev-month')">
+          上个月
+        </DewButton>
+        <DewButton @click="selectDate('today')">
+          今天
+        </DewButton>
+        <DewButton @click="selectDate('next-month')">
+          下个月
+        </DewButton>
+        <DewButton @click="selectDate('next-year')">
+          下个年
+        </DewButton>
+      </div>
+    </div>
+    <div :class="bem.e('body')">
+      <table :class="bemTable.b()" cellpadding="0" cellspacing="0">
+        <thead>
+          <tr>
+            <th v-for="day in weekDays">
+              {{ day }}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rid) in rows" :key="rid">
+            <td
+              v-for="(cell, cid) in row"
+              :key="cid"
+              :class="[
+                bemTableCell.b(),
+                bemTableCell.e(cell.type),
+                getCellClass(cell),
+              ]"
+              @click="handlePick(cell)"
+            >
+              <slot name="data-cell" :data="getSlotData(cell)">
+                {{ cell.text }}
+              </slot>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</template>
 
 <style scoped></style>

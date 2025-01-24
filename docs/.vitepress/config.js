@@ -9,11 +9,11 @@ module.exports = {
     repo: '',
     footer: {
       message: 'Released under the License.',
-      copyright: 'Copyright 2024 - present dewUI'
+      copyright: 'Copyright 2024 - present dewUI',
     },
     nav: [
       { text: '指南', link: '/guide/installation', activeMatch: '/guide/' },
-      { text: '组件', link: '/component/icon', activeMatch: '/component/' }
+      { text: '组件', link: '/component/icon', activeMatch: '/component/' },
     ],
     sidebar: {
       '/guide/': [
@@ -21,16 +21,16 @@ module.exports = {
           text: '指南',
           items: [
             { text: '安装', link: '/guide/installation' },
-            { text: '快速开始', link: '/guide/quickStart' }
-          ]
-        }
+            { text: '快速开始', link: '/guide/quickStart' },
+          ],
+        },
       ],
       '/component/': [
         {
           text: '基础组件',
-          items: [{ text: 'Icon', iink: '/component/icon' }]
-        }
-      ]
-    }
-  }
+          items: [{ text: 'Icon', iink: '/component/icon' }],
+        },
+      ],
+    },
+  },
 }

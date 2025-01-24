@@ -1,4 +1,4 @@
-import { ExtractPropTypes, InjectionKey, PropType, SetupContext } from 'vue'
+import type { ExtractPropTypes, InjectionKey, PropType, SetupContext } from 'vue'
 
 export type Key = string | number
 
@@ -23,80 +23,80 @@ export interface TreeOption {
 export const treeProps = {
   data: {
     type: Array as PropType<TreeOption[]>,
-    default: () => []
+    default: () => [],
   },
   defaultExpandedKeys: {
     type: Array as PropType<Array<Key>>,
-    default: () => []
+    default: () => [],
   },
   labelFiled: {
     type: String,
-    default: 'label'
+    default: 'label',
   },
   keyField: {
     type: String,
-    default: 'key'
+    default: 'key',
   },
   childrenField: {
     type: String,
-    default: 'children'
+    default: 'children',
   },
   onLoad: Function as PropType<(node: TreeOption) => Promise<TreeOption[]>>,
   selectedKeys: {
-    type: Array as PropType<Key[]>
+    type: Array as PropType<Key[]>,
   },
   selectable: {
     type: Boolean,
-    default: true
+    default: true,
   },
   multiple: {
     type: Boolean,
-    default: false
+    default: false,
   },
   defaultCheckedKeys: {
     type: Array as PropType<Array<Key>>,
-    default: () => []
+    default: () => [],
   },
   showCheckbox: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 } as const
 
 export const treeNodeProps = {
   node: {
     type: Object as PropType<TreeNode>,
-    required: true
+    required: true,
   },
   expanded: {
     type: Boolean,
-    required: true
+    required: true,
   },
   loadingKeys: {
-    type: Object as PropType<Set<Key>>
+    type: Object as PropType<Set<Key>>,
   },
   selectedKeys: {
     type: Array as PropType<Key[]>,
-    default: []
+    default: [],
   },
   showCheckbox: {
     type: Boolean,
-    default: false
+    default: false,
   },
   checked: Boolean,
   disabled: Boolean,
-  indeterminate: Boolean
+  indeterminate: Boolean,
 } as const
 
 export const treeNodeEmits = {
   toggle: (node: TreeNode) => node,
   select: (node: TreeNode) => node,
-  check: (node: TreeNode, value: boolean) => typeof value === 'boolean'
+  check: (node: TreeNode, value: boolean) => typeof value === 'boolean',
 }
 
 export const treeEmitts = {
   // 内部发射的事件用来同步响应式数据
-  'update:selectedKeys': (keys: Key[]) => keys
+  'update:selectedKeys': (keys: Key[]) => keys,
 }
 
 export type TreeNodeProps = Partial<ExtractPropTypes<typeof treeNodeProps>>
@@ -112,6 +112,6 @@ export const treeInjectKey: InjectionKey<TreeContext> = Symbol()
 export const treeNodeContextProps = {
   node: {
     type: Object as PropType<TreeNode>,
-    required: true
-  }
+    required: true,
+  },
 }

@@ -1,21 +1,24 @@
+<!-- eslint-disable no-console -->
 <script setup lang="ts">
-import { FormInstance } from '@dew-ui/components/form'
-import { Key, TreeOption } from '@dew-ui/components/tree'
-import { UploadRawFile } from '@dew-ui/components/upload'
+import type { FormInstance } from '@dew-ui/components/form'
+import type { Key, TreeOption } from '@dew-ui/components/tree'
+import type { UploadRawFile } from '@dew-ui/components/upload'
+import type { DefineComponent } from 'vue'
 import { AddCircle } from '@vicons/ionicons5'
-import { DefineComponent, reactive, ref } from 'vue'
 import { Random } from 'mockjs'
+import { reactive, ref } from 'vue'
 import ItemComponent from './Item.vue'
 
 function createData(level = 4, parentKey = ''): any {
-  if (!level) return []
-  const arr = new Array(6 - level).fill(0)
+  if (!level)
+    return []
+  const arr = Array.from({ length: 6 - level }).fill(0)
   return arr.map((_, idx: number) => {
     const key = parentKey + level + idx
     return {
       name: createLabel(level),
       key,
-      children: createData(level - 1, key)
+      children: createData(level - 1, key),
     }
   })
 }
@@ -36,9 +39,12 @@ function createData(level = 4, parentKey = ''): any {
 // }
 
 function nextLabel(currentLabel?: string | number): string {
-  if (!currentLabel) return 'Out of Tao, One is born'
-  if (currentLabel === 'Out of Tao, One is born') return 'Out of One, Two'
-  if (currentLabel === 'Out of One, Two') return 'Out of Two, Three'
+  if (!currentLabel)
+    return 'Out of Tao, One is born'
+  if (currentLabel === 'Out of Tao, One is born')
+    return 'Out of One, Two'
+  if (currentLabel === 'Out of One, Two')
+    return 'Out of Two, Three'
   if (currentLabel === 'Out of Two, Three') {
     return 'Out of Three, the created universe'
   }
@@ -49,10 +55,14 @@ function nextLabel(currentLabel?: string | number): string {
 }
 
 function createLabel(level: number): string {
-  if (level === 4) return '道生一'
-  if (level === 3) return '一生二'
-  if (level === 2) return '二生三'
-  if (level === 1) return '三生万物'
+  if (level === 4)
+    return '道生一'
+  if (level === 3)
+    return '一生二'
+  if (level === 2)
+    return '二生三'
+  if (level === 1)
+    return '三生万物'
   return ''
 }
 
@@ -84,15 +94,15 @@ const data = ref(createData())
 //     ]
 //   }
 // ])
-const handleLoad = (node: TreeOption) => {
-  return new Promise<TreeOption[]>((resolve, reject) => {
+function handleLoad(node: TreeOption) {
+  return new Promise<TreeOption[]>((resolve) => {
     setTimeout(() => {
       resolve([
         {
           label: nextLabel(node.label),
           key: node.key + nextLabel(node.label),
-          isLeaf: false
-        }
+          isLeaf: false,
+        },
       ])
     }, 1000)
   })
@@ -110,28 +120,28 @@ const value = ref<Key[]>([])
 const check = ref(true)
 const inputValue = ref('hello')
 
-const handleBlur = (e: FocusEvent) => {
+function handleBlur(e: FocusEvent) {
   console.log('blur', e)
 }
 
-const handleFocus = (e: FocusEvent) => {
+function handleFocus(e: FocusEvent) {
   console.log('focus', e)
 }
 
 const formState = reactive({ username: '', password: '' })
 const formRef = ref<FormInstance>()
 
-const handleFormValidate = () => {
+function handleFormValidate() {
   formRef.value?.validate((valid, errors) => {
     console.log(valid, errors)
   })
 }
-const handleBeforeUpload = (rawFile: UploadRawFile) => {
+function handleBeforeUpload(_rawFile: UploadRawFile) {
   return true
 }
 
 const currentDate = ref(new Date())
-const totalCount = 1000
+const totalCount = 100
 interface DataType {
   id: number
   name: string
@@ -145,7 +155,7 @@ while (index++ !== totalCount) {
     id: index,
     name: Random.name(),
     desc: Random.csentence(20, 120),
-    index
+    index,
   })
 }
 const mockItems = ref(mockData)
@@ -153,23 +163,25 @@ const mockItems = ref(mockData)
 
 <template>
   <!-- icon 组件 -->
-  <dew-icon :color="'red'" :size="40"><AddCircle></AddCircle></dew-icon>
+  <dew-icon color="red" :size="40">
+    <AddCircle />
+  </dew-icon>
 
-  <br />
+  <br>
 
   <!-- button 组件 -->
-  <dew-button type="danger" style="margin-right: 10px" :loading="true"
-    >默认按钮</dew-button
-  >
-  <dew-button size="small" type="danger" style="margin-right: 10px"
-    >小按钮</dew-button
-  >
-  <dew-button size="medium" type="danger" style="margin-right: 10px"
-    >中按钮</dew-button
-  >
-  <dew-button size="large" type="danger" style="margin-right: 10px"
-    >大按钮</dew-button
-  >
+  <dew-button type="danger" style="margin-right: 10px" :loading="true">
+    默认按钮
+  </dew-button>
+  <dew-button size="small" type="danger" style="margin-right: 10px">
+    小按钮
+  </dew-button>
+  <dew-button size="medium" type="danger" style="margin-right: 10px">
+    中按钮
+  </dew-button>
+  <dew-button size="large" type="danger" style="margin-right: 10px">
+    大按钮
+  </dew-button>
   <dew-button
     size="medium"
     type="primary"
@@ -179,23 +191,25 @@ const mockItems = ref(mockData)
     @mousedown="handleClickButton"
   >
     <template #icon>
-      <dew-icon><AddCircle></AddCircle></dew-icon></template
-    >图标按钮</dew-button
-  >
+      <dew-icon><AddCircle /></dew-icon>
+    </template>图标按钮
+  </dew-button>
 
   <!-- 树组件，传递一个树形组件 -->
   <dew-tree
+    v-model:selected-keys="value"
     :data="data"
     label-filed="name"
     key-filed="key"
     children-field="children"
     :on-load="handleLoad"
-    v-model:selected-keys="value"
     selectable
     show-checkbox
     :default-checked-keys="['40']"
   >
-    <template #default="{ node }">{{ node.key }} - {{ node.label }}</template>
+    <template #default="{ node }">
+      {{ node.key }} - {{ node.label }}
+    </template>
   </dew-tree>
 
   <!-- checkbox 组件 -->
@@ -205,24 +219,27 @@ const mockItems = ref(mockData)
     :indeterminate="true"
     label="节点1"
     @change="handleChange"
-    >节点2</dew-checkbox
   >
+    节点2
+  </dew-checkbox>
 
   <!-- input 组件 -->
-  <br />
+  <br>
   {{ inputValue }}
   <dew-input
     v-model="inputValue"
-    @blur="handleBlur"
-    @focus="handleFocus"
     placeholder="占位符"
     :show-password="true"
     :clearable="true"
+    @blur="handleBlur"
+    @focus="handleFocus"
   >
-    <template #prepend>前缀</template>
+    <template #prepend>
+      前缀
+    </template>
     <template #prefixIcon>
       <dew-icon>
-        <AddCircle></AddCircle>
+        <AddCircle />
       </dew-icon>
     </template>
     <!-- <template #suffixIcon>
@@ -230,20 +247,22 @@ const mockItems = ref(mockData)
         <AddCircle></AddCircle>
       </dew-icon>
     </template> -->
-    <template #append>后缀</template>
+    <template #append>
+      后缀
+    </template>
   </dew-input>
-  <br />
+  <br>
   <!-- form 组件 -->
   <dew-form
-    :model="formState"
     ref="formRef"
+    :model="formState"
     :rules="{
       username: {
         min: 6,
         max: 10,
         message: '用户名6-10位',
-        trigger: ['change', 'blur']
-      }
+        trigger: ['change', 'blur'],
+      },
     }"
   >
     <dew-form-item
@@ -255,14 +274,14 @@ const mockItems = ref(mockData)
           min: 6,
           max: 10,
           message: '用户名至少6-10位',
-          trigger: ['change', 'blur']
-        }
+          trigger: ['change', 'blur'],
+        },
       ]"
     >
       <dew-input
-        placeholder="请输入用户名"
         v-model="formState.username"
-      ></dew-input>
+        placeholder="请输入用户名"
+      />
       <!-- <template #label>用户名插槽</template> -->
     </dew-form-item>
 
@@ -272,15 +291,17 @@ const mockItems = ref(mockData)
       :rules="[{ required: true, message: '请输入密码', trigger: 'blur' }]"
     >
       <dew-input
+        v-model="formState.password"
         placeholder="请输入密码"
         type="password"
-        v-model="formState.password"
-      ></dew-input>
+      />
     </dew-form-item>
-    <dew-button @click="handleFormValidate">校验</dew-button>
+    <dew-button @click="handleFormValidate">
+      校验
+    </dew-button>
   </dew-form>
 
-  <!--  上传组件-->
+  <!--  上传组件 -->
   <dew-upload multiple :before-upload="handleBeforeUpload" drag>
     <dew-button>点我上传</dew-button>
   </dew-upload>
@@ -301,9 +322,9 @@ const mockItems = ref(mockData)
     :data-sources="mockItems"
     data-key="id"
     :keeps="30"
-    :estimateSize="80"
-    :dataComponent="ItemComponent as DefineComponent<{}, {}, any>"
-  ></dew-virtual-scroll-list>
+    :estimate-size="80"
+    :data-component="ItemComponent as DefineComponent<{}, {}, any>"
+  />
 </template>
 
 <style scoped lang="scss">

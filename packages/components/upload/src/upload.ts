@@ -1,5 +1,5 @@
 // 给每个文件进行包装 包装一个全新的类型
-import { ExtractPropTypes, PropType } from 'vue'
+import type { ExtractPropTypes, PropType } from 'vue'
 
 export interface UploadFile {
   uid?: number
@@ -16,75 +16,75 @@ export type UploadFiles = UploadFile[]
 export const baseProps = {
   FileList: {
     type: Array as PropType<UploadFiles>,
-    default: () => [] as const
+    default: () => [] as const,
   },
   action: {
     type: String,
-    default: ''
+    default: '',
   },
   multile: {
     type: Boolean,
-    default: false
+    default: false,
   },
   name: {
     type: String,
-    default: 'file'
+    default: 'file',
   },
   accept: {
     type: String,
-    default: ''
+    default: '',
   },
   method: {
     type: String,
-    default: 'post'
+    default: 'post',
   },
   headers: {
     type: Object,
-    default: () => {}
+    default: () => {},
   },
   data: {
     type: Object,
-    default: () => {}
+    default: () => {},
   },
   drag: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 } as const
 
 export type UploadRawFile = File & { uid: number }
 export type UploadProgressEvent = ProgressEvent & { percentage: number }
-const NOOP = () => {}
+function NOOP() {}
 
 export const uploadProps = {
   ...baseProps,
   onPreview: {
     type: Function as PropType<(file: UploadFile) => void>,
-    default: NOOP
+    default: NOOP,
   },
   beforeUpload: {
     type: Function as PropType<
       (file: UploadRawFile) => Promise<boolean> | boolean
     >,
-    default: NOOP
+    default: NOOP,
   },
   onChange: {
     type: Function as PropType<
       (file: UploadFile) => Promise<boolean> | boolean
     >,
-    default: NOOP
+    default: NOOP,
   },
   beforeRemove: {
     type: Function as PropType<
       (file: UploadFile, uploadFiles: UploadFiles) => Promise<boolean> | boolean
     >,
-    default: NOOP
+    default: NOOP,
   },
   onRemove: {
     type: Function as PropType<
       (file: UploadFile, uploadFiles: UploadFiles) => void
     >,
-    default: NOOP
+    default: NOOP,
   },
   onProgress: {
     type: Function as PropType<
@@ -94,20 +94,20 @@ export const uploadProps = {
         uploadFiles: UploadFiles
       ) => void
     >,
-    default: NOOP
+    default: NOOP,
   },
   onSuccess: {
     type: Function as PropType<
       (response: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => void
     >,
-    default: NOOP
+    default: NOOP,
   },
   onError: {
     type: Function as PropType<
       (err: any, uploadFile: UploadFile, uploadFiles: UploadFiles) => void
     >,
-    default: NOOP
-  }
+    default: NOOP,
+  },
 } as const
 
 export type UploadProps = ExtractPropTypes<typeof uploadProps>
