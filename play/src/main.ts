@@ -12,8 +12,20 @@ import Input from '@dew-ui/components/input'
 import { FormItem, Form } from '@dew-ui/components/form'
 import Upload from '@dew-ui/components/upload'
 import Calendar from '@dew-ui/components/calendar'
+import VirtualScrollList from '@dew-ui/components/virtual-scroll-list'
 
-const plugins = [Icon, Tree, Checkbox, Button, Input, FormItem, Form, Upload, Calendar]
+const plugins = [
+  Icon,
+  Tree,
+  Checkbox,
+  Button,
+  Input,
+  FormItem,
+  Form,
+  Upload,
+  Calendar,
+  VirtualScrollList
+]
 
 const app = createApp(App)
 plugins.forEach(plugin => app.use(plugin)) // 将组件注册成全局注册，可以使用了

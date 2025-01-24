@@ -3,7 +3,9 @@ import { FormInstance } from '@dew-ui/components/form'
 import { Key, TreeOption } from '@dew-ui/components/tree'
 import { UploadRawFile } from '@dew-ui/components/upload'
 import { AddCircle } from '@vicons/ionicons5'
-import { reactive, ref } from 'vue'
+import { DefineComponent, reactive, ref } from 'vue'
+import { Random } from 'mockjs'
+import ItemComponent from './Item.vue'
 
 function createData(level = 4, parentKey = ''): any {
   if (!level) return []
@@ -129,11 +131,57 @@ const handleBeforeUpload = (rawFile: UploadRawFile) => {
 }
 
 const currentDate = ref(new Date())
+const totalCount = 1000
+interface DataType {
+  id: number
+  name: string
+  desc: string
+  index: number
+}
+const mockData: Array<DataType> = []
+let index = 0
+while (index++ !== totalCount) {
+  mockData.push({
+    id: index,
+    name: Random.name(),
+    desc: Random.csentence(20, 120),
+    index
+  })
+}
+const mockItems = ref(mockData)
 </script>
 
 <template>
   <!-- icon 组件 -->
-  <dew-icon :color="'yellow'" :size="40"><AddCircle></AddCircle></dew-icon>
+  <dew-icon :color="'red'" :size="40"><AddCircle></AddCircle></dew-icon>
+
+  <br />
+
+  <!-- button 组件 -->
+  <dew-button type="danger" style="margin-right: 10px" :loading="true"
+    >默认按钮</dew-button
+  >
+  <dew-button size="small" type="danger" style="margin-right: 10px"
+    >小按钮</dew-button
+  >
+  <dew-button size="medium" type="danger" style="margin-right: 10px"
+    >中按钮</dew-button
+  >
+  <dew-button size="large" type="danger" style="margin-right: 10px"
+    >大按钮</dew-button
+  >
+  <dew-button
+    size="medium"
+    type="primary"
+    :round="true"
+    :loading="true"
+    @click="handleClickButton"
+    @mousedown="handleClickButton"
+  >
+    <template #icon>
+      <dew-icon><AddCircle></AddCircle></dew-icon></template
+    >图标按钮</dew-button
+  >
 
   <!-- 树组件，传递一个树形组件 -->
   <dew-tree
@@ -158,28 +206,6 @@ const currentDate = ref(new Date())
     label="节点1"
     @change="handleChange"
     >节点2</dew-checkbox
-  >
-  <br />
-  <!-- button 组件 -->
-  <dew-button
-    size="medium"
-    type="danger"
-    :round="true"
-    :loading="true"
-    :disabled="true"
-    icon-placement="right"
-    >按钮组件</dew-button
-  >
-  <dew-button
-    size="medium"
-    type="danger"
-    :round="true"
-    @click="handleClickButton"
-    @mousedown="handleClickButton"
-  >
-    <template #icon>
-      <dew-icon><AddCircle></AddCircle></dew-icon></template
-    >图标按钮</dew-button
   >
 
   <!-- input 组件 -->
@@ -268,6 +294,23 @@ const currentDate = ref(new Date())
       </p>
     </template>
   </dew-calendar>
+
+  <!-- 虚拟列表 -->
+  <dew-virtual-scroll-list
+    class="virtual-list"
+    :data-sources="mockItems"
+    data-key="id"
+    :keeps="30"
+    :estimateSize="80"
+    :dataComponent="ItemComponent as DefineComponent<{}, {}, any>"
+  ></dew-virtual-scroll-list>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.virtual-list {
+  width: 100%;
+  height: 500px;
+  overflow-y: scroll;
+  border: 3px solid rgb(143, 184, 214);
+}
+</style>
