@@ -3,6 +3,7 @@ import { createNameSpace } from '@dew-ui/utils/create'
 import {
   computed,
   defineComponent,
+  h,
   onMounted,
   reactive,
   ref,
@@ -79,7 +80,7 @@ export default defineComponent({
             class={bem.e('scroll-list')}
             style={{ transform: `translate3d(0,${offset.value}px, 0)` }}
           >
-            {visibleData.value.map((node, idx) => slots.default!({ node }))}
+            {visibleData.value.map(node => slots.default!({ node }))}
           </div>
         </div>
       )

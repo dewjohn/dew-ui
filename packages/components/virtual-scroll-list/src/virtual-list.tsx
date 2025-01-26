@@ -1,5 +1,5 @@
 import type { RangeOptions, updateType } from './props'
-import { defineComponent, onBeforeMount, ref } from 'vue'
+import { defineComponent, h, onBeforeMount, ref } from 'vue'
 import { virtualProps } from './props'
 import { initVirtual } from './virtual'
 import VirtualItem from './virtual-item'
@@ -7,11 +7,12 @@ import VirtualItem from './virtual-item'
 export default defineComponent({
   name: 'dew-virtual-scroll-list',
   props: virtualProps,
-  setup(props, {}) {
+  setup(props) {
     // 默认情况下我们希望显示30条数据，其他的要用“空白”来代替，给内部盒子一个非常高的高度
     // 用上下padding来撑开
     // 需要先定义一下数据的显示范围，还有上padding和下padding的一个大小
     const range = ref<RangeOptions | null>(null)
+    const root = ref<HTMLElement | null>()
     let virtualIns: ReturnType<typeof initVirtual>
     const update: updateType = (newRange: RangeOptions) => {
       range.value = newRange
@@ -70,7 +71,6 @@ export default defineComponent({
     function onItemResize(id: string | number, size: number) {
       virtualIns.saveSize(id, size)
     }
-    const root = ref<HTMLElement | null>()
     return () => {
       const { padFront, padBehind } = range.value!
       const paddinStyle = {

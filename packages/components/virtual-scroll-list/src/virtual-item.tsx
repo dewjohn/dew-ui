@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUpdated, ref } from 'vue'
+import { defineComponent, h, onMounted, onUpdated, ref } from 'vue'
 import { virtualItemProps } from './props'
 
 export default defineComponent({
