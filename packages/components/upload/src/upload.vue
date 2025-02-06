@@ -2,7 +2,7 @@
 import type { UploadFile, UploadFiles, UploadRawFile } from './upload'
 import type { UploadContentProps } from './upload-content'
 import { computed, ref, watch } from 'vue'
-import { uploadProps } from './upload'
+import { uploadFileEmit, uploadProps } from './upload'
 import UploadContent from './upload-content.vue'
 
 defineOptions({
@@ -10,13 +10,12 @@ defineOptions({
 })
 
 const props = defineProps(uploadProps)
-const emit = defineEmits()
-
+const emit = defineEmits(uploadFileEmit)
 const uploadFiles = ref<UploadFiles>(props.FileList)
 
 watch(uploadFiles, (newVal) => {
   // 监控文件变化 发射事件
-  emit('onUdate:file-list', newVal)
+  emit('update:fileList', newVal)
 })
 
 function findFile(rawFile: UploadRawFile) {

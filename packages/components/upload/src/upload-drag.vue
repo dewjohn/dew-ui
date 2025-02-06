@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { uploadDragFileEmit } from './upload'
 
-const emit = defineEmits()
+const emit = defineEmits(uploadDragFileEmit)
 const isOver = ref(false)
 function onDrop(e: DragEvent) {
   e.stopPropagation()
-  emit('file', Array.from(e.dataTransfer!.files))
-  console.log(e.dataTransfer?.files)
+  emit('file', Array.from(e.dataTransfer!.files) as any as FileList)
 }
 
 function onDragover() {

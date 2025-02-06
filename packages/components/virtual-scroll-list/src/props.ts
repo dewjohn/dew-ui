@@ -1,3 +1,4 @@
+/* eslint-disable ts/no-empty-object-type */
 import type { DefineComponent, ExtractPropTypes, PropType } from 'vue'
 
 export const virtualProps = {

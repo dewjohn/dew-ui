@@ -10,7 +10,7 @@ defineOptions({
   name: 'DewButton',
   inheritAttrs: false,
 })
-const props = defineProps(buttonProps)
+defineProps(buttonProps)
 const emit = defineEmits(buttonEmit)
 const bem = createNameSpace('button')
 const attrs = useAttrs()

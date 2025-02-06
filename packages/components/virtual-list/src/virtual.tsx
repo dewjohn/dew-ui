@@ -3,7 +3,6 @@ import { createNameSpace } from '@dew-ui/utils/create'
 import {
   computed,
   defineComponent,
-  h,
   onMounted,
   reactive,
   ref,

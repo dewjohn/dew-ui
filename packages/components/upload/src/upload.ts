@@ -114,3 +114,12 @@ export type UploadProps = ExtractPropTypes<typeof uploadProps>
 
 let id = 0
 export const genId = () => id++
+
+export const uploadDragFileEmit = {
+  // 内部发射的事件用来同步响应式数据
+  file: (files: FileList) => files,
+}
+
+export const uploadFileEmit = {
+  'update:fileList': (files: UploadFiles) => files,
+}

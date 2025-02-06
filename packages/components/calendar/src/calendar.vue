@@ -28,6 +28,16 @@ const bemTableCell = createNameSpace('calendar-table-cell')
 const selectedDay = ref<Dayjs>() // 标识用户选中的是哪一个
 const now = dayjs()
 
+// 根据用户的属性计算当前的日期出来
+const date = computed(() => {
+  if (!props.modelValue) {
+    return now
+  }
+  else {
+    return dayjs(props.modelValue)
+  }
+})
+
 const prevMonthDay = computed(() => date.value.subtract(1, 'month').date(1))
 const nextMonthDay = computed(() => date.value.add(1, 'month').date(1))
 const prevYearDay = computed(() => date.value.subtract(1, 'year').date(1))
@@ -78,16 +88,6 @@ function selectDate(type: CalendarDateType) {
   const day = map[type]
   pickDay(day)
 }
-
-// 根据用户的属性计算当前的日期出来
-const date = computed(() => {
-  if (!props.modelValue) {
-    return now
-  }
-  else {
-    return dayjs(props.modelValue)
-  }
-})
 
 // 0-6 0是周日
 const firstDayOfWeek = dayjs().startOf('week').day()
@@ -146,7 +146,6 @@ const rows = computed(() => {
 
   list = [...list, ...nextMonthDays]
 
-  console.log(list)
   return Array.from({ length: 6 }).map((_, idx) => {
     const startOfLine = idx * 7
     return list.slice(startOfLine, startOfLine + 7) // 0 + 7 7 + 14
@@ -196,7 +195,7 @@ function getSlotData({ text, type }: CalendarDateCell) {
       <table :class="bemTable.b()" cellpadding="0" cellspacing="0">
         <thead>
           <tr>
-            <th v-for="day in weekDays">
+            <th v-for="(day, index) in weekDays" :key="index">
               {{ day }}
             </th>
           </tr>

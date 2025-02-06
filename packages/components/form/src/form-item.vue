@@ -68,6 +68,7 @@ function onValidationFailed(err: Values) {
   validateMessage.value = errors ? errors[0].message : ''
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 const validate: FormItemContext['validate'] = async (trigger, callback?) => {
   // 拿到触发的时机，校验是否可以通过调用callback或者调用promise.then方法
   const rules = getRuleFilter(trigger)

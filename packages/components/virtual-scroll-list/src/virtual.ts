@@ -1,6 +1,6 @@
 import type { RangeOptions, updateType, VirtualOptions } from './props'
 
-const enum CALC_TYPE {
+enum CALC_TYPE {
   INIT = 'INIT',
   FIXED = 'FIXED',
   DYNAMIC = 'DYNAMIC',

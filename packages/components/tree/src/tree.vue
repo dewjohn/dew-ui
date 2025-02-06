@@ -80,7 +80,6 @@ watch(
   props.data,
   (data: TreeOption[]) => {
     tree.value = createTree(data)
-    console.log(tree.value)
   },
   { immediate: true },
 )
@@ -166,7 +165,6 @@ watch(
   (value) => {
     if (value) {
       selectKeysRef.value = value
-      console.log('selectedKeys', value)
     }
   },
   {

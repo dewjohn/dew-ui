@@ -1,5 +1,5 @@
 import type { RangeOptions, updateType } from './props'
-import { defineComponent, h, onBeforeMount, ref } from 'vue'
+import { defineComponent, onBeforeMount, ref } from 'vue'
 import { virtualProps } from './props'
 import { initVirtual } from './virtual'
 import VirtualItem from './virtual-item'
