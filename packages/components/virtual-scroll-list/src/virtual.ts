@@ -13,21 +13,37 @@ export function initVirtual(param: VirtualOptions, update: updateType) {
     padFront: 0,
     padBehind: 0,
   }
+  let firstRangeAvg = 0
   let offsetValue = 0 // 没有触发滚动之前的变量
   let fixedSizeVal = 0 // 默认值是0
   let calcType = CALC_TYPE.INIT
   const sizes = new Map<string | number, number>()
 
-  function isFiexed() {
+  function isFixed() {
     return calcType === CALC_TYPE.FIXED
   }
 
   function getEstimateSize() {
-    return isFiexed() ? fixedSizeVal : param.estimateSize
+    // 优化平均值
+    return isFixed() ? fixedSizeVal : firstRangeAvg || param.estimateSize
   }
-
+  function getIndexOffset(idx: number) {
+    if (!idx)
+      return 0
+    let offset = 0
+    for (let i = 0; i < idx; i++) {
+      const indexSize = sizes.get(param.uniqueIds[i])
+      offset += typeof indexSize === 'number' ? indexSize : getEstimateSize()
+    }
+    return offset
+  }
   function getPadFront() {
-    return getEstimateSize() * range.start
+    if (isFixed()) {
+      return fixedSizeVal * range.start
+    }
+    else {
+      return getIndexOffset(range.start)
+    }
   }
   function getPadBehind() {
     const lastIndex = param.uniqueIds.length - 1
@@ -57,7 +73,31 @@ export function initVirtual(param: VirtualOptions, update: updateType) {
 
   function getScrollOvers() {
     // 根据划过的偏移量 / 每项高度 = 划过个数
-    return Math.floor(offsetValue / getEstimateSize())
+    if (isFixed()) {
+      return Math.floor(offsetValue / getEstimateSize())
+    }
+    else {
+      // 精确找到滚动了多少个
+      // 获取最接近的滚动的那一项，计算每一项的偏移量，看与哪一项最接近
+      let low = 0
+      let high = param.uniqueIds.length
+      let middle = 0
+      let middleOffset = 0
+      while (low <= high) {
+        middle = low + Math.floor((high - low) / 2)
+        middleOffset = getIndexOffset(middle)
+        if (middleOffset === offsetValue) {
+          return middle
+        }
+        else if (middleOffset < offsetValue) {
+          low = middle + 1
+        }
+        else if (middleOffset > offsetValue) {
+          high = middle - 1
+        }
+      }
+      return low > 0 ? --low : 0
+    }
   }
 
   function getEndByStart(start: number) {
@@ -109,6 +149,13 @@ export function initVirtual(param: VirtualOptions, update: updateType) {
     else if (calcType === CALC_TYPE.FIXED && fixedSizeVal !== size) {
       calcType = CALC_TYPE.DYNAMIC
       fixedSizeVal = 0 // 默认采用estimateSize
+    }
+    if (calcType === CALC_TYPE.DYNAMIC) {
+      // 根据已经加载的数据算一个平均值，来撑开滚动条
+      // 根据当前展示的数据 来计算一个滚动条的值
+      if (sizes.size < Math.min(param.keeps, param.uniqueIds.length)) {
+        firstRangeAvg = Math.round([...sizes.values()].reduce((acc, cur) => acc + cur, 0) / sizes.size)
+      }
     }
   }
 

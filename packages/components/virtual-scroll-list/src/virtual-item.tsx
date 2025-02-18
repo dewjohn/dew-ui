@@ -1,4 +1,4 @@
-import { defineComponent, onMounted, onUpdated, ref } from 'vue'
+import { defineComponent, h, onMounted, onUpdated, ref } from 'vue'
 import { virtualItemProps } from './props'
 
 export default defineComponent({
@@ -10,12 +10,8 @@ export default defineComponent({
     function dispatch() {
       emit('itemResize', props.uniqueKey, root.value?.offsetHeight)
     }
-    onMounted(() => {
-      dispatch()
-    })
-    onUpdated(() => {
-      dispatch()
-    })
+    onMounted(dispatch)
+    onUpdated(dispatch)
     return () => {
       const { component: Component, source, uniqueKey } = props
       return (

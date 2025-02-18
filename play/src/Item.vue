@@ -8,12 +8,19 @@ defineProps({
 </script>
 
 <template>
-  <div class="item" :style="{ height: '80px' }" :data-index="source.index">
-    <div class="head">
+  <div class="item" :data-index="source.index">
+    <div
+      class="head" :style="{
+        color: 'rebeccapurple',
+        fontWeight: 'bold',
+        marginBottom: '20px',
+        fontSize: '35px',
+      }"
+    >
       <span>{{ source.index }}</span>
       <span>{{ source.name }}</span>
     </div>
-    <div class="body">
+    <div class="body" :style="{ fontSize: '18px' }">
       <span>{{ source.desc }}</span>
     </div>
   </div>
