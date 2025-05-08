@@ -16,7 +16,7 @@ export default defineComponent({
       const { component: Component, source, uniqueKey } = props
       return (
         Component && (
-          <div key={uniqueKey} ref={root}>
+          <div key={uniqueKey} ref={root} class="virtual-item">
             <Component source={source}></Component>
           </div>
         )

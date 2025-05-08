@@ -5,8 +5,9 @@ import LoadingIcon from '@dew-ui/components/internal-icon/Loading'
 import SwitcherIcon from '@dew-ui/components/internal-icon/Switcher'
 import { createNameSpace } from '@dew-ui/utils/create'
 import { computed } from 'vue'
-import { treeNodeEmits, treeNodeProps } from './tree'
+import { treeNodeEmits } from './tree'
 import DewTreeNodeContext from './tree-node-context'
+import { treeNodeProps } from './treeNode'
 
 const props = defineProps(treeNodeProps)
 const emit = defineEmits(treeNodeEmits)
